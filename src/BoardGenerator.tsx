@@ -74,7 +74,7 @@ const isValidFormData = (layout: any): boolean => (
     layout.seed
 );
 
-const getStartColor = (formData: CodenamesFormData): 'Blue' | 'Red' => {
+const getStartColor = (formData: { startColor: 'Random' | 'Blue' | 'Red', seed: string }): 'Blue' | 'Red' => {
     if (formData.startColor == 'Random') {
         return seededRandom(formData.seed + 'start', 0, 1) ? 'Blue' : 'Red';
     } else {
@@ -91,8 +91,9 @@ const createLayout = ({
     assassins,
     seed
 }: CodenamesFormData): CardType[][] => {
-    const blueCards = cards + (startColor == 'Blue' ? startCards : 0);
-    const redCards = cards + (startColor == 'Red' ? startCards : 0);
+    const actualStartColor = getStartColor({ startColor, seed });
+    const blueCards = cards + (actualStartColor == 'Blue' ? startCards : 0);
+    const redCards = cards + (actualStartColor == 'Red' ? startCards : 0);
 
     const flatLayout: Array<CardType> = fill(Array(boardRows * boardColumns), 'Bystander');
     fill(flatLayout, 'Blue', 0, blueCards)
