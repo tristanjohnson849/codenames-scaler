@@ -106,7 +106,7 @@ const createLayout = ({
 
 function shuffle<T>(arr: T[], seed: string): void {
     for (var i = arr.length - 1; i > 0; i--) {
-        const j = seededRandom(i + seed, 0, i + 1);
+        const j = seededRandom(i + seed, 0, i);
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
 }
