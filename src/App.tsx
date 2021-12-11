@@ -5,7 +5,8 @@ import BoardGenerator from './BoardGenerator';
 const App = () => (
   <BrowserRouter>
     <Routes>
-      <Route path=":slug" element={<BoardGenerator/>}/>
+      <Route path="" element={<BoardGenerator/>}/>
+      <Route path="/:slug" element={<BoardGenerator/>}/>
     </Routes>
   </BrowserRouter>
 );
