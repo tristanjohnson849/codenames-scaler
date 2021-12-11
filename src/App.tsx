@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import BoardGenerator from './BoardGenerator';
 
 const App = () => (
