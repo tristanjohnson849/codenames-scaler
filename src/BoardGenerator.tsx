@@ -7,22 +7,47 @@ import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import SeedRandom from 'seed-random';
 
-const BoardGenerator = () => {
-    const params = useParams();
-    const slug: string | undefined = params.slug;    
-    let initialFormData = undefined;
-    if (slug) {
-        const decodedFormData = JSON.parse(atob(slug));
-        if (isValidLayout(decodedFormData)) {
-            initialFormData = decodedFormData;
+const formDataKeys: string[] = Object.keys({
+    boardRows: 0,
+    boardColumns: 0,
+    cards: 0,
+    startCards: 0,
+    startColor: 'Random',
+    assassins: 0,
+    seed: ''
+}).sort();
+
+const encodeFormData = (formData: CodenamesFormData): string => {
+    const orderedValues = Object.entries(formData).sort(([k1], [k2]) => k1.localeCompare(k2)).map(([_, v]) => v);
+    return btoa(JSON.stringify(orderedValues));
+}
+
+const decodeFormData = (slug: string): CodenamesFormData | undefined => {
+    const orderedValues = JSON.parse(atob(slug));
+    if (orderedValues && orderedValues.length == formDataKeys.length) {
+        const ret: any = {};
+        formDataKeys.forEach((key, i) => ret[key] = orderedValues[i]);
+        if (isValidFormData(ret)) {
+            return ret;
         }
     }
-    const [formData, setFormData] = useState<CodenamesFormData | null>(initialFormData);
+
+    return undefined;
+}
+
+const BoardGenerator = () => {
+    const params = useParams();
+    const slug: string | undefined = params.slug;
+    let initialFormData = undefined;
+    if (slug) {
+        initialFormData = decodeFormData(slug);
+    }
+    const [formData, setFormData] = useState<CodenamesFormData | undefined>(initialFormData);
     const navigate = useNavigate();
 
     const setFormDataAndHash = (newFormData: CodenamesFormData) => {
         setFormData(newFormData);
-        navigate(`/${btoa(JSON.stringify(newFormData))}`)
+        navigate(`/${encodeFormData(newFormData)}`)
     }
     
     return (
@@ -34,7 +59,7 @@ const BoardGenerator = () => {
     );
 }
 
-const isValidLayout = (layout: any): boolean => (
+const isValidFormData = (layout: any): boolean => (
     layout && 
     layout.boardRows && 
     layout.boardColumns && 
