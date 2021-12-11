@@ -8,9 +8,9 @@ export interface BoardProps {
 };
 
 const typeToColor: { [K in CardType]: string } = {
-    Blue: '#0062cc',
-    Red: '#e3242b',
-    Bystander: '#bfaa8c',
+    Blue: '#268bad',
+    Red: '#c9461d',
+    Bystander: '#af926e',
     Assassin: '#1b1b1b',
 }
 
