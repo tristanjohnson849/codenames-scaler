@@ -1,0 +1,27 @@
+body {
+    background: #363636;
+    color: #fff;
+    font-family: Helvetica,Arial,sans-serif;
+    font-weight: lighter;
+}
+
+input {
+    background: #434343;
+    color: #fff;
+    padding: 4px;
+    border: none;
+    border-bottom: 2px solid #262626;
+    margin-top: 8px;
+    box-shadow: 4px 4px 8px #262626;
+}
+
+@keyframes fadeOut {
+    0% {opacity: 1;}
+    50% {opacity: 1;}
+    100% {opacity: 0;}
+ }
+ 
+ .fade-out {
+    animation-name: fadeOut;
+    animation-duration: 6s;
+ }
