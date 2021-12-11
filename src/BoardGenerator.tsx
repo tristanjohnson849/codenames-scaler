@@ -23,7 +23,12 @@ const encodeFormData = (formData: CodenamesFormData): string => {
 }
 
 const decodeFormData = (slug: string): CodenamesFormData | undefined => {
-    const orderedValues = JSON.parse(atob(slug));
+    let orderedValues: any[] = [];
+    try {
+        orderedValues = JSON.parse(atob(slug));
+    } catch {
+        return undefined;
+    }
     if (orderedValues && orderedValues.length == formDataKeys.length) {
         const ret: any = {};
         formDataKeys.forEach((key, i) => ret[key] = orderedValues[i]);
@@ -47,7 +52,7 @@ const BoardGenerator = () => {
 
     const setFormDataAndHash = (newFormData: CodenamesFormData) => {
         setFormData(newFormData);
-        navigate(`/${encodeFormData(newFormData)}`)
+        navigate(`/codenames-scaler/${encodeFormData(newFormData)}`)
     }
     
     return (
