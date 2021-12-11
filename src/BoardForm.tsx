@@ -25,16 +25,20 @@ const linkButtonStyle = {
     color: '#FFF'
 };
 
+const defaultFormValues: Readonly<Omit<CodenamesFormData, 'seed'>> = {
+    boardRows: 5,
+    boardColumns: 5,
+    cards: 8,
+    startCards: 1,
+    assassins: 1,
+    startColor: 'Random'
+};
+
 const BoardForm: React.FC<BoardFormProps> = ({ initialFormData, onSubmit }) => {
     const startValues = initialFormData
         ? initialFormData
         : {
-            boardRows: 5,
-            boardColumns: 5,
-            cards: 8,
-            startCards: 1,
-            assassins: 1,
-            startColor: 'Random',
+            ...defaultFormValues,
             seed: randomSeed()
         }
 
@@ -47,7 +51,6 @@ const BoardForm: React.FC<BoardFormProps> = ({ initialFormData, onSubmit }) => {
     const [seed, setSeed] = useState(startValues.seed);
 
     const [error, setError] = useState<string | null>(null);
-    const formRef = useRef<HTMLFormElement | null>(null);
 
     const setErrorTimeout: typeof setError = (action) => {
         setTimeout(() => setError(null), 6 * 1000);
@@ -55,7 +58,7 @@ const BoardForm: React.FC<BoardFormProps> = ({ initialFormData, onSubmit }) => {
     }
 
     return (
-        <form ref={(f) => formRef.current = f} onSubmit={(e) => {
+        <form onSubmit={(e) => {
             e.preventDefault();
             const formData: any = {};
             for (let [k, v] of (new FormData(e.currentTarget)).entries()) {
@@ -91,7 +94,7 @@ const BoardForm: React.FC<BoardFormProps> = ({ initialFormData, onSubmit }) => {
                     <BasicInput label="Team Cards" type="number" name="cards" value={cards} onChange={(e) => setCards(parseInt(e.target.value))} defaultValue={Math.floor(rows * columns / 3) || 8} />,
                     <BasicInput label="Start Handicap" type="number" name="startCards" value={startCards} onChange={(e) => setStartCards(parseInt(e.target.value))} defaultValue={1} />,
                     <BasicInput label="Assassins" type="number" name="assassins" value={assassins} onChange={(e) => setAssassins(parseInt(e.target.value))} defaultValue={Math.floor(rows * columns / 15) || 1} />,
-                    <RadioInput title="Starting Team" labels={['Red', 'Blue', 'Random']} name="startColor" value={startColor} onChange={(e) => setStartColor(e.target.value)} defaultValue="Random" />
+                    <RadioInput title="Starting Team" labels={['Red', 'Blue', 'Random']} name="startColor" value={startColor} onChange={(e) => setStartColor(e.target.value as any)} defaultValue="Random" />
                 ]} />
                 <InputCard title="Random" inputs={[<SeedInput name="seed" value={seed} onChange={(e) => setSeed(e.target.value)}/>]}/>
             </div>
@@ -100,16 +103,18 @@ const BoardForm: React.FC<BoardFormProps> = ({ initialFormData, onSubmit }) => {
             <button
                 type="button"
                 onClick={() => {
-                    if (formRef.current) {
-                        setRows(5);
-                        setColumns(5);
-                        formRef.current.reset()
-                    }
+                    setRows(defaultFormValues.boardRows);
+                    setColumns(defaultFormValues.boardColumns);
+                    setCards(defaultFormValues.cards);
+                    setStartCards(defaultFormValues.startCards);
+                    setAssassins(defaultFormValues.assassins);
+                    setStartColor(defaultFormValues.startColor);
+                    setSeed(randomSeed());
                 }}
                 style={{ ...linkButtonStyle, marginRight: '8px' }}>
                 Reset Defaults
             </button>
-            {error && <span className="fade-out" style={{ color: '#e3242b' }}>{error}</span>}
+            {error && <span className="fade-out" style={{ color: '#c9461d' }}>{error}</span>}
         </form>
     );
 };
@@ -147,6 +152,8 @@ const BasicInput: React.FC<{ label: string } & React.ComponentProps<"input">> = 
                         if (inputRef.current) {
                             inputRef.current.value = '' + inputProps.defaultValue;
                         }
+                        // @ts-ignore
+                        inputProps.onChange && inputProps.onChange({ target: { value: inputProps.defaultValue}})
                     }}
                 >
                     (Suggested: {inputProps.defaultValue})
