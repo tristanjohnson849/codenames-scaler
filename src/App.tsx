@@ -5,9 +5,8 @@ import BoardGenerator from './BoardGenerator';
 const App = () => (
   <HashRouter>
     <Routes>
-      <Route path="/" element={<Navigate replace to="/codenames-scaler" />}/>
-      <Route path="/codenames-scaler" element={<BoardGenerator/>}/>
-      <Route path="/codenames-scaler/:slug" element={<BoardGenerator/>}/>
+      <Route path="" element={<BoardGenerator/>}/>
+      <Route path=":slug" element={<BoardGenerator/>}/>
     </Routes>
   </HashRouter>
 );

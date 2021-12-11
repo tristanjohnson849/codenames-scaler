@@ -52,7 +52,7 @@ const BoardGenerator = () => {
 
     const setFormDataAndHash = (newFormData: CodenamesFormData) => {
         setFormData(newFormData);
-        navigate(`/codenames-scaler/${encodeFormData(newFormData)}`)
+        navigate(`/${encodeFormData(newFormData)}`)
     }
     
     return (
