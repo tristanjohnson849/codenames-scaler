@@ -153,7 +153,7 @@ const BasicInput: React.FC<{ label: string } & React.ComponentProps<"input">> = 
                     onClick={() => {
                         setInputValue(defaultValue);
                         // @ts-ignore
-                        inputProps.onChange && inputProps.onChange({ target: { value: inputProps.defaultValue}})
+                        inputProps.onChange && inputProps.onChange({ target: { value: defaultValue}})
                     }}
                 >
                     (Suggested: {defaultValue})
