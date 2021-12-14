@@ -109,7 +109,7 @@ function shuffle<T>(arr: T[], rand: (min: number, max: number) => number): void 
     }
 }
 
-export const seededRandomInt = (seed: string) => (min: number, max: number): number => {
+export const seededRandomInt = (seed: string) => {
     const rand = seedrandom(seed);
-    return Math.floor(rand() * (max - min + 1) + min);
+    return (min: number, max: number): number => Math.floor(rand() * (max - min + 1) + min);
 };
