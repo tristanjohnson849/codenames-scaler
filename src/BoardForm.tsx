@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 
 export interface CodenamesFormData {
     boardRows: number;
@@ -62,8 +62,9 @@ const BoardForm: React.FC<BoardFormProps> = ({ initialFormData, onSubmit }) => {
             e.preventDefault();
             const formData: any = {};
             for (let [k, v] of (new FormData(e.currentTarget)).entries()) {
+                
                 const asInt = parseInt(v as string);
-                formData[k] = isNaN(asInt) ? v : asInt;
+                formData[k] = /^\d+$/.test(v as string) ? parseInt(v as string) : v;
             }
             const totalCards = formData.boardRows * formData.boardColumns;
             const configuredCards = formData.cards * 2 + formData.startCards + formData.assassins;
@@ -140,26 +141,32 @@ const InputCard: React.FC<InputCardProps> = ({ title, inputs }) => {
     );
 };
 
-const BasicInput: React.FC<{ label: string } & React.ComponentProps<"input">> = ({ label, ...inputProps }) => {
-    const inputRef = useRef<HTMLInputElement | null>(null);
+const BasicInput: React.FC<{ label: string } & React.ComponentProps<"input">> = ({ label, value, defaultValue, ...inputProps }) => {
+    const [inputValue, setInputValue] = useControllableState(value, defaultValue || '');
+
     return (
         <label style={{ display: 'flex', flexDirection: 'column', margin: '8px' }}>
-            <span>{label} {inputProps.defaultValue != undefined && (
+            <span>{label} {defaultValue != undefined && (
                 <button
                     type="button"
                     style={{ ...linkButtonStyle, color: '#aaa' }}
                     onClick={() => {
-                        if (inputRef.current) {
-                            inputRef.current.value = '' + inputProps.defaultValue;
-                        }
+                        setInputValue(defaultValue);
                         // @ts-ignore
                         inputProps.onChange && inputProps.onChange({ target: { value: inputProps.defaultValue}})
                     }}
                 >
-                    (Suggested: {inputProps.defaultValue})
+                    (Suggested: {defaultValue})
                 </button>
             )}</span>
-            <input {...inputProps} ref={(i) => inputRef.current = i} />
+            <input 
+                {...inputProps} 
+                value={inputValue} 
+                onChange={(e) => { 
+                    setInputValue(e.target.value); 
+                    inputProps.onChange && inputProps.onChange(e);
+                }}
+            />
         </label>
     );
 };
