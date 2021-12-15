@@ -23,7 +23,7 @@ const BoardGenerator = () => {
     return (
         <div style={{ width: '100%', height: '100%' }}>
             <h1 style={{ margin: '32px' }}>Codenames Board Generator</h1>
-            <BoardForm initialFormData={initialFormData} onSubmit={(formData) => setFormDataAndHash(formData)}/>
+            <BoardForm formData={formData} setFormData={(formData) => setFormDataAndHash(formData)}/>
             {formData && <BoardView layout={createLayout(formData)} startColor={getStartColor(formData.startColor, formData.seed)}/>}
         </div>
     );

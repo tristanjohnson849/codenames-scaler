@@ -8,14 +8,16 @@ export interface CodenamesFormData {
     assassins: number;
     startColor: 'Blue' | 'Red' | 'Random';
     seed: string;
+    [key: string]: string | number;
 }
 
 export interface BoardFormProps {
-    initialFormData?: CodenamesFormData;
-    onSubmit: (formData: CodenamesFormData) => void
+    formData?: CodenamesFormData;
+    setFormData: (formData: CodenamesFormData) => void
 }
 
 const linkButtonStyle = {
+    padding: 'none',
     background: 'none',
     border: 'none',
     cursor: 'pointer',
@@ -25,18 +27,19 @@ const linkButtonStyle = {
     color: '#FFF'
 };
 
-const defaultFormValues: Readonly<Omit<CodenamesFormData, 'seed'>> = {
+const defaultFormValues: CodenamesFormData = {
     boardRows: 5,
     boardColumns: 5,
     cards: 8,
     startCards: 1,
     assassins: 1,
-    startColor: 'Random'
+    startColor: 'Random',
+    seed: ''
 };
 
-const BoardForm: React.FC<BoardFormProps> = ({ initialFormData, onSubmit }) => {
-    const startValues = initialFormData
-        ? initialFormData
+const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
+    const startValues = formData
+        ? formData
         : {
             ...defaultFormValues,
             seed: randomSeed()
@@ -50,6 +53,7 @@ const BoardForm: React.FC<BoardFormProps> = ({ initialFormData, onSubmit }) => {
     const [startColor, setStartColor] = useState(startValues.startColor);
     const [seed, setSeed] = useState(startValues.seed);
 
+    const [newSeedOnGenerate, setNewSeedOnGenerate] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     const setErrorTimeout: typeof setError = (action) => {
@@ -62,9 +66,12 @@ const BoardForm: React.FC<BoardFormProps> = ({ initialFormData, onSubmit }) => {
             e.preventDefault();
             const formData: any = {};
             for (let [k, v] of (new FormData(e.currentTarget)).entries()) {
-                
-                const asInt = parseInt(v as string);
                 formData[k] = /^\d+$/.test(v as string) ? parseInt(v as string) : v;
+            }
+            if (newSeedOnGenerate) {
+                const newSeed = randomSeed();
+                formData.seed = newSeed;
+                setSeed(newSeed);
             }
             const totalCards = formData.boardRows * formData.boardColumns;
             const configuredCards = formData.cards * 2 + formData.startCards + formData.assassins;
@@ -72,7 +79,7 @@ const BoardForm: React.FC<BoardFormProps> = ({ initialFormData, onSubmit }) => {
                 setErrorTimeout(`Too many configured cards (${configuredCards}) for this board (${formData.boardRows}x${formData.boardColumns}=${totalCards})`);
                 return false;
             } else {
-                onSubmit(formData);
+                setFormData(formData);
             }
         }} style={{
             margin: '32px',
@@ -84,7 +91,7 @@ const BoardForm: React.FC<BoardFormProps> = ({ initialFormData, onSubmit }) => {
             <div style={{
                 display: 'flex',
                 flexWrap: 'wrap',
-                marginBottom: '12px'
+                marginBottom: '24px'
             }}>
                 <InputCard title="Board" inputs={[
                     <BasicInput label="Rows" type="number" name="boardRows" value={rows} onChange={(e) => setRows(parseInt(e.target.value))} defaultValue={5} />,
@@ -99,7 +106,11 @@ const BoardForm: React.FC<BoardFormProps> = ({ initialFormData, onSubmit }) => {
                 ]} />
                 <InputCard title="Random" inputs={[<SeedInput name="seed" value={seed} onChange={(e) => setSeed(e.target.value)}/>]}/>
             </div>
-            <button style={{ ...linkButtonStyle, marginRight: '8px' }}>Generate</button>
+            <button style={{ background: '#268bad', marginRight: '12px' }}>Generate</button>
+            <label style={{ marginRight: '12px', color: '#888', fontSize: '14px' }}>
+                <input type="checkbox" checked={newSeedOnGenerate} onChange={(e) => setNewSeedOnGenerate(e.target.checked)}/>
+                with a new random seed
+            </label>
 
             <button
                 type="button"
@@ -112,7 +123,7 @@ const BoardForm: React.FC<BoardFormProps> = ({ initialFormData, onSubmit }) => {
                     setStartColor(defaultFormValues.startColor);
                     setSeed(randomSeed());
                 }}
-                style={{ ...linkButtonStyle, marginRight: '8px' }}>
+                style={{ background: '#c9461d', marginRight: '12px' }}>
                 Reset Defaults
             </button>
             {error && <span className="fade-out" style={{ color: '#c9461d' }}>{error}</span>}
@@ -149,14 +160,14 @@ const BasicInput: React.FC<{ label: string } & React.ComponentProps<"input">> = 
             <span>{label} {defaultValue != undefined && (
                 <button
                     type="button"
-                    style={{ ...linkButtonStyle, color: '#aaa' }}
+                    style={{ ...linkButtonStyle, color: '#888', fontSize: '14px' }}
                     onClick={() => {
                         setInputValue(defaultValue);
                         // @ts-ignore
                         inputProps.onChange && inputProps.onChange({ target: { value: defaultValue}})
                     }}
                 >
-                    (Suggested: {defaultValue})
+                    Suggested: {defaultValue}
                 </button>
             )}</span>
             <input 
@@ -180,14 +191,14 @@ const RadioInput: React.FC<{ title: string, labels: string[] } & React.Component
                 {title} {defaultValue != undefined && (
                     <button
                         type="button"
-                        style={{ ...linkButtonStyle, color: '#aaa' }}
+                        style={{ ...linkButtonStyle, color: '#888', fontSize: '14px' }}
                         onClick={() => {
                             // @ts-ignore
                             onChange && onChange({ target: { value: defaultValue }});
                             setCheckedLabel(defaultValue);
                         }}
                     >
-                        (Suggested: {defaultValue})
+                        Suggested: {defaultValue}
                     </button>
                 )}
             </div>
@@ -221,7 +232,7 @@ const SeedInput: React.FC<React.ComponentProps<"input">> = ({ value, onChange, .
                 Seed 
                 <button
                     type="button"
-                    style={{ ...linkButtonStyle, color: '#aaa' }}
+                    style={{ ...linkButtonStyle, color: '#888', fontSize: '14px' }}
                     onClick={() => {
                         const newSeed = randomSeed();
                         setSeed(newSeed);
@@ -229,7 +240,7 @@ const SeedInput: React.FC<React.ComponentProps<"input">> = ({ value, onChange, .
                         onChange && onChange({ target: { value: newSeed }});
                     }}
                 >
-                    (New Seed)
+                    New Seed
                 </button>
             </div>
             <input 
@@ -245,8 +256,8 @@ const SeedInput: React.FC<React.ComponentProps<"input">> = ({ value, onChange, .
     );
 };
 
-function useControllableState<T>(value: T, initialValue: T): [state: T, setState: (action: React.SetStateAction<T>) => void] {
-    const [stateValue, setState] = useState(initialValue);
+function useControllableState<T>(value: T, initialValue?: T | undefined): [state: T, setState: (action: React.SetStateAction<T>) => void] {
+    const [stateValue, setState] = useState(initialValue || value);
     const effectiveValue = value !== undefined ? value : stateValue;
     return [effectiveValue, setState];
 }

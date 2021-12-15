@@ -20,7 +20,10 @@ const v1FormDataKeys: string[] = Object.keys({
 }).sort();
 
 export const encodeFormData = (formData: CodenamesFormData): string => {
-    const orderedValues = Object.entries(formData).sort(([k1], [k2]) => k1.localeCompare(k2)).map(([_, v]) => v);
+    const orderedValues = v1FormDataKeys
+                            .map((k): [k: string, v: string | number] => [k, formData[k]])
+                            .sort(([k1], [k2]) => k1.localeCompare(k2))
+                            .map(([_, v]) => v);
     return btoa(JSON.stringify([WRITE_VERSION, ...orderedValues]));
 }
 
