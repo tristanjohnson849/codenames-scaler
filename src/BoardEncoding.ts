@@ -102,7 +102,7 @@ export const createLayout = ({
 
     shuffle(flatLayout, rand);
 
-    return chunk(flatLayout, boardRows);
+    return chunk(flatLayout, boardColumns);
 };
 
 function shuffle<T>(arr: T[], rand: (min: number, max: number) => number): void {
