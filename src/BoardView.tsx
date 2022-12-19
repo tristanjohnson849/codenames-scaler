@@ -149,7 +149,7 @@ const HLight: React.FC<{ isTop: boolean, color?: CardType }> = ({ isTop, color =
 };
 
 const VLight: React.FC<{ isLeft: boolean, color?: CardType }> = ({ isLeft, color = 'Bystander' }) => {
-    const lightColor = color ? typeToColor[color] : '#FFE800';
+    const lightColor = typeToColor[color];
     return <div style={{
         position: 'absolute',
         left: isLeft ? 0 : undefined,
