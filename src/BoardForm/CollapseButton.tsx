@@ -13,7 +13,6 @@ const CollapseButton = ({isOpen, label, closeLabelOnOpen = true}: CollapseButton
     return (
         <div style={{ 
             position: 'relative',
-            width: isOpen ? '' : '100%', 
             fontSize: '24px',
             cursor: 'pointer',
             marginLeft: '16px',
