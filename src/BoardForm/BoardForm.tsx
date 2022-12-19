@@ -74,6 +74,8 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
             seed: randomSeed()
         };
 
+    // for animations
+    const [proxyGameMode, setProxyGameMode] = useState(startValues.mode);
     const [mode, _setGameMode] = useState(startValues.mode);
 
     const [rows, setRows] = useState(startValues.boardRows);
@@ -88,19 +90,15 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
     const [closeConfigOnGenerate, setCloseConfigOnGenerate] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-
     const [isCollapsibleOpen, setIsCollapsibleOpen] = useState<boolean>(true);
+    const [resetFormInputs, setResetFormInputs] = useState<boolean>(false);
 
     const setErrorTimeout: typeof setError = (action) => {
         setTimeout(() => setError(null), 6 * 1000);
         setError(action);
     }
 
-
     const setGameMode = (newMode: GameMode) => {
-        if (!window.confirm('This will reset config to default values - are you sure?')) {
-            return;
-        }
         if (mode !== newMode) {
             const defaults = defaultFormValues[newMode];
             setRows(defaults.boardRows);
@@ -109,6 +107,7 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
             setStartCards(defaults.startCards);
             setAssassins(defaults.assassins);
             setStartColor(defaults.startColor);
+            setResetFormInputs(false);
         }
         _setGameMode(newMode);
     };
@@ -165,67 +164,80 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
                 }}>
                     {/* TODO confirm board reset */}
                     <InputCard title="Game Mode">
-                        <RadioInput labels={['Standard', 'Duet']} name="mode" value={mode} onChange={(e) => setGameMode(e.target.value as any)} />
+                        <RadioInput labels={['Standard', 'Duet']} name="mode" value={mode} onChange={(e) => {
+                            if (!window.confirm('This will reset config to default values - are you sure?')) {
+                                return;
+                            }
+                            setProxyGameMode(e.target.value as any);
+                            setResetFormInputs(true);
+                        }} />
                     </InputCard>
                 </div>
                 <hr style={{ height: '1px', border: 'none', background: '#555', margin: '24px 0' }} />
-                <div style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    marginBottom: '24px'
-                }}>
-                    
-                    <InputCard title="Board">
-                        <BasicInput label="Rows" type="number" name="boardRows" value={rows} onChange={(e) => setRows(parseInt(e.target.value))} defaultValue={defaultFormValues[mode].boardRows} />
-                        <BasicInput label="Columns" type="number" name="boardColumns" value={columns} onChange={(e) => setColumns(parseInt(e.target.value))} defaultValue={defaultFormValues[mode].boardColumns} />
-                    </InputCard>
-                    <InputCard title="Game">
-                        <BasicInput label="Team Cards" type="number" name="cards" value={cards} onChange={(e) => setCards(parseInt(e.target.value))} defaultValue={suggestedCards(rows, columns, mode)} />
-                        <BasicInput label="Assassins" type="number" name="assassins" value={assassins} onChange={(e) => setAssassins(parseInt(e.target.value))} defaultValue={suggestedAssassins(rows, columns, mode)} />
-                    </InputCard>
-                    {mode==='Standard' && <InputCard title="Standard Mode">
-                        <BasicInput label="Start Handicap" type="number" name="startCards" value={startCards} onChange={(e) => setStartCards(parseInt(e.target.value))} defaultValue={defaultFormValues[mode].startCards} />
-                        <RadioInput title="Starting Team" labels={['Red', 'Blue', 'Random']} name="startColor" value={startColor} onChange={(e) => setStartColor(e.target.value as any)} defaultValue="Random" />
-                    </InputCard>}
-                    <InputCard title="Random">
-                        <SeedInput name="seed" value={seed} onChange={(e) => setSeed(e.target.value)}/>
-                    </InputCard>
-                    
-                </div>
-                <button style={{ 
-                    background: typeToColor[mode === 'Standard' ? 'Blue' : 'DuetCorrect'], 
-                    marginRight: '12px' 
-                }}>
-                    Generate
-                </button>
-                <label style={{ marginRight: '12px', color: '#888', fontSize: '14px' }}>
-                    <input type="checkbox" checked={newSeedOnGenerate} onChange={(e) => setNewSeedOnGenerate(e.target.checked)}/>
-                    with a new random seed
-                </label>
-                <label style={{ marginRight: '12px', color: '#888', fontSize: '14px' }}>
-                    <input type="checkbox" checked={closeConfigOnGenerate} onChange={(e) => setCloseConfigOnGenerate(e.target.checked)}/>
-                    Close config?
-                </label>
-
-                <button
-                    type="button"
-                    onClick={() => {
-                        const defaults = defaultFormValues[mode];
-                        setRows(defaults.boardRows);
-                        setColumns(defaults.boardColumns);
-                        setCards(defaults.cards);
-                        setStartCards(defaults.startCards);
-                        setAssassins(defaults.assassins);
-                        setStartColor(defaults.startColor);
-                        setSeed(randomSeed());
-                    }}
-                    style={{ 
-                        background: typeToColor[mode === 'Standard' ? 'Red' : 'Bystander'],
-                         marginRight: '12px' 
+                <Collapsible 
+                    trigger="" 
+                    open={!resetFormInputs} onClose={() => setGameMode(proxyGameMode)}
+                    transitionTime={COLLAPSIBLE_TIME}
+                    easing={COLLAPSIBLE_EASING}
+                >
+                    <div style={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        marginBottom: '24px'
                     }}>
-                    Reset Defaults
-                </button>
-                {error && <span className="fade-out" style={{ color: '#c9461d' }}>{error}</span>}
+                        
+                        <InputCard title="Board">
+                            <BasicInput label="Rows" type="number" name="boardRows" value={rows} onChange={(e) => setRows(parseInt(e.target.value))} defaultValue={defaultFormValues[mode].boardRows} />
+                            <BasicInput label="Columns" type="number" name="boardColumns" value={columns} onChange={(e) => setColumns(parseInt(e.target.value))} defaultValue={defaultFormValues[mode].boardColumns} />
+                        </InputCard>
+                        <InputCard title="Game">
+                            <BasicInput label="Team Cards" type="number" name="cards" value={cards} onChange={(e) => setCards(parseInt(e.target.value))} defaultValue={suggestedCards(rows, columns, mode)} />
+                            <BasicInput label="Assassins" type="number" name="assassins" value={assassins} onChange={(e) => setAssassins(parseInt(e.target.value))} defaultValue={suggestedAssassins(rows, columns, mode)} />
+                        </InputCard>
+                        {mode==='Standard' && <InputCard title="Standard Mode">
+                            <BasicInput label="Start Handicap" type="number" name="startCards" value={startCards} onChange={(e) => setStartCards(parseInt(e.target.value))} defaultValue={defaultFormValues[mode].startCards} />
+                            <RadioInput title="Starting Team" labels={['Red', 'Blue', 'Random']} name="startColor" value={startColor} onChange={(e) => setStartColor(e.target.value as any)} defaultValue="Random" />
+                        </InputCard>}
+                        <InputCard title="Random">
+                            <SeedInput name="seed" value={seed} onChange={(e) => setSeed(e.target.value)}/>
+                        </InputCard>
+                        
+                    </div>
+                    <button style={{ 
+                        background: typeToColor[mode === 'Standard' ? 'Blue' : 'DuetCorrect'], 
+                        marginRight: '12px' 
+                    }}>
+                        Generate
+                    </button>
+                    <label style={{ marginRight: '12px', color: '#888', fontSize: '14px' }}>
+                        <input type="checkbox" checked={newSeedOnGenerate} onChange={(e) => setNewSeedOnGenerate(e.target.checked)}/>
+                        with a new random seed
+                    </label>
+                    <label style={{ marginRight: '12px', color: '#888', fontSize: '14px' }}>
+                        <input type="checkbox" checked={closeConfigOnGenerate} onChange={(e) => setCloseConfigOnGenerate(e.target.checked)}/>
+                        Close config?
+                    </label>
+
+                    <button
+                        type="button"
+                        onClick={() => {
+                            const defaults = defaultFormValues[mode];
+                            setRows(defaults.boardRows);
+                            setColumns(defaults.boardColumns);
+                            setCards(defaults.cards);
+                            setStartCards(defaults.startCards);
+                            setAssassins(defaults.assassins);
+                            setStartColor(defaults.startColor);
+                            setSeed(randomSeed());
+                        }}
+                        style={{ 
+                            background: typeToColor[mode === 'Standard' ? 'Red' : 'Bystander'],
+                            marginRight: '12px' 
+                        }}>
+                        Reset Defaults
+                    </button>
+                    {error && <span className="fade-out" style={{ color: '#c9461d' }}>{error}</span>}
+                </Collapsible>
             </form>
         </Collapsible>
     );
