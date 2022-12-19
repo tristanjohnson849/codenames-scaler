@@ -85,9 +85,11 @@ const DuetBoardView: React.FC<{cards: CardType[][][], info?: string[]}> = ({ car
                     if (window.confirm("For Team 1's eyes only - are you sure?")) {
                         setIsBoardOneOpen(true);
                     }
-                }}                onTriggerClosing={() => setIsBoardOneOpen(false)}
+                }}                
+                onTriggerClosing={() => setIsBoardOneOpen(false)}
                 containerElementProps={{style: {
-                    margin: '32px',
+                    maxWidth: '1200px',
+                    margin: '48px auto',
                     border: '1px solid #555',
                     borderRadius: '16px',
                     padding: '16px',
@@ -106,7 +108,8 @@ const DuetBoardView: React.FC<{cards: CardType[][][], info?: string[]}> = ({ car
                 }}
                 onTriggerClosing={() => setIsBoardTwoOpen(false)}
                 containerElementProps={{style: {
-                    margin: '32px',
+                    maxWidth: '1200px',
+                    margin: '48px auto',
                     border: '1px solid #555',
                     borderRadius: '16px',
                     padding: '16px',
@@ -116,7 +119,8 @@ const DuetBoardView: React.FC<{cards: CardType[][][], info?: string[]}> = ({ car
                 <StandardBoardView cards={cards.map(row => row.map(cell => cell[1]))} startColor="DuetCorrect"/>
             </Collapsible>
             {info && <div style={{
-                    margin: '32px',
+                    maxWidth: '1200px',
+                    margin: '48px auto',
                     border: '1px solid #555',
                     borderRadius: '16px',
                     padding: '16px',

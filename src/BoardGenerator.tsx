@@ -21,13 +21,13 @@ const BoardGenerator = () => {
     }
     
     return (
-        <div style={{ width: '100%', height: '100%' }}>
-            <h1 style={{ margin: '32px' }}>Codenames Board Generator</h1>
+        <div style={{ height: '100%', margin: '48px' }}>
+            <h1>Codenames Board Generator</h1>
             <a 
                 href="https://github.com/tristanjohnson849/codenames-scaler"
                 style={{ 
                     position: 'absolute',
-                    margin: '32px',
+                    margin: '60px',
                     top: '0px', 
                     right: '0px', 
                     color: '#777', 

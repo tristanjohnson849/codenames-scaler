@@ -148,11 +148,12 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
             onTriggerClosing={() => setIsCollapsibleOpen(false)}
             trigger={<CollapseButton isOpen={isCollapsibleOpen} label="Game Config"/>}
             containerElementProps={{style: {
-                margin: '32px',
+                maxWidth: '1200px',
+                margin: '48px auto',
                 border: '1px solid #555',
                 borderRadius: '16px',
                 padding: '16px',
-                boxShadow: '8px 8px 12px #2b2b2b'
+                boxShadow: '8px 8px 12px #2b2b2b',
             }}}
             transitionTime={COLLAPSIBLE_TIME}
             easing={COLLAPSIBLE_EASING}
