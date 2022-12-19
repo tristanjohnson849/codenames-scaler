@@ -124,7 +124,7 @@ const DuetBoardView: React.FC<{cards: CardType[][][], info?: string[]}> = ({ car
                 }}>
                 <h3>Board Info</h3>
                 <ul>
-                    {info.map(item => <li>{item}</li>)}
+                    {info.map(item => <li style={{ margin: '8px 0'}}>{item}</li>)}
                 </ul>
             </div>}
         </div>
