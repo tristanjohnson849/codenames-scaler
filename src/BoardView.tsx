@@ -79,6 +79,7 @@ const DuetBoardView: React.FC<{cards: CardType[][][], info?: string[]}> = ({ car
     return (
         <div>
             <Collapsible 
+                tabIndex={0}
                 trigger={<CollapseButton isOpen={isBoardOneOpen} label={"Team 1"} closeLabelOnOpen={false}/>}
                 open={isBoardOneOpen}
                 onTriggerOpening={() => {
@@ -99,6 +100,7 @@ const DuetBoardView: React.FC<{cards: CardType[][][], info?: string[]}> = ({ car
                 <StandardBoardView cards={cards.map(row => row.map(cell => cell[0]))} startColor="DuetCorrect"/>
             </Collapsible>
             <Collapsible 
+                tabIndex={0}
                 trigger={<CollapseButton label={"Team 2"} isOpen={isBoardTwoOpen} closeLabelOnOpen={false}/>}
                 open={isBoardTwoOpen}
                 onTriggerOpening={() => {

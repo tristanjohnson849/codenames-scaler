@@ -142,7 +142,7 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
 
     return (
         <Collapsible 
-        tabIndex={0}
+            tabIndex={0}
             open={isCollapsibleOpen}
             onTriggerOpening={() => setIsCollapsibleOpen(true)}
             onTriggerClosing={() => setIsCollapsibleOpen(false)}
