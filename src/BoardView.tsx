@@ -19,30 +19,33 @@ export const typeToColor: { [K in CardType]: string } = {
 
 const BoardView: React.FC<BoardProps> = ({layout: { cards, mode, startColor, info }}) => (
     mode === 'Standard'
-        ? <StandardBoardView cards={cards as CardType[][]} startColor={startColor}/>
+        ? <BoardSection defaultOpen={true} teamName="Codemasters" startColor={startColor} cards={cards as CardType[][]}/>
         : <DuetBoardView cards={cards as CardType[][][]} info={info}/>
 );
 
 
-const StandardBoardView: React.FC<{cards: CardType[][], startColor: CardType}> = ({ cards, startColor }) => (
+const SingleBoardView: React.FC<{cards: CardType[][], startColor: CardType}> = ({ cards, startColor }) => (
     <div style={{
         position: 'relative',
         display: 'flex',
-        width: '75vh',
-        height: '75vh',
-        margin: 'auto',
+        maxWidth: '720px',
+        minWidth: '424px',
+        aspectRatio: '1 / 1',
+        margin: '18px auto',
         padding: '32px',
         background: '#434343',
         borderRadius: '12px',
         border: '1px solid #777',
-        boxShadow: '8px 8px 12px #2b2b2b',
+        boxShadow: '8px 8px 12px #2b2b2b'
     }}>
         <HLight isTop={true} color={startColor} />
         <HLight isTop={false} color={startColor} />
         <VLight isLeft={true} color={startColor} />
         <VLight isLeft={false} color={startColor} />
         <div style={{
+            minWidth: '360px',
             flex: 1,
+            aspectRatio: '1 / 1',
             display: 'flex',
             flexDirection: 'column',
             borderRadius: '12px',
@@ -73,55 +76,12 @@ const StandardBoardView: React.FC<{cards: CardType[][], startColor: CardType}> =
 );
 
 const DuetBoardView: React.FC<{cards: CardType[][][], info?: string[]}> = ({ cards, info}) => {
-    const [isBoardOneOpen, setIsBoardOneOpen] = useState<boolean>(false);
-    const [isBoardTwoOpen, setIsBoardTwoOpen] = useState<boolean>(false);
     return (
-        <div>
-            <Collapsible 
-                tabIndex={0}
-                trigger={<CollapseButton isOpen={isBoardOneOpen} label={"Team 1"} closeLabelOnOpen={false}/>}
-                open={isBoardOneOpen}
-                onTriggerOpening={() => {
-                    if (window.confirm("For Team 1's eyes only - are you sure?")) {
-                        setIsBoardOneOpen(true);
-                    }
-                }}                
-                onTriggerClosing={() => setIsBoardOneOpen(false)}
-                containerElementProps={{style: {
-                    maxWidth: '1200px',
-                    margin: '48px auto',
-                    border: '1px solid #555',
-                    borderRadius: '16px',
-                    padding: '16px',
-                    boxShadow: '8px 8px 12px #2b2b2b'
-                }}}
-            >
-                <StandardBoardView cards={cards.map(row => row.map(cell => cell[0]))} startColor="DuetCorrect"/>
-            </Collapsible>
-            <Collapsible 
-                tabIndex={0}
-                trigger={<CollapseButton label={"Team 2"} isOpen={isBoardTwoOpen} closeLabelOnOpen={false}/>}
-                open={isBoardTwoOpen}
-                onTriggerOpening={() => {
-                    if (window.confirm("For Team 2's eyes only - are you sure?")) {
-                        setIsBoardTwoOpen(true);
-                    }
-                }}
-                onTriggerClosing={() => setIsBoardTwoOpen(false)}
-                containerElementProps={{style: {
-                    maxWidth: '1200px',
-                    margin: '48px auto',
-                    border: '1px solid #555',
-                    borderRadius: '16px',
-                    padding: '16px',
-                    boxShadow: '8px 8px 12px #2b2b2b'
-                }}}
-            >
-                <StandardBoardView cards={cards.map(row => row.map(cell => cell[1]))} startColor="DuetCorrect"/>
-            </Collapsible>
+        <>
+            <BoardSection teamName="Team 1" startColor="DuetCorrect" cards={cards.map(row => row.map(cell => cell[0]))}/>
+            <BoardSection teamName="Team 2" startColor="DuetCorrect" cards={cards.map(row => row.map(cell => cell[1]))}/>
             {info && <div style={{
-                    maxWidth: '1200px',
-                    margin: '48px auto',
+                    margin: 'auto',
                     border: '1px solid #555',
                     borderRadius: '16px',
                     padding: '16px',
@@ -132,10 +92,9 @@ const DuetBoardView: React.FC<{cards: CardType[][][], info?: string[]}> = ({ car
                     {info.map(item => <li style={{ margin: '8px 0'}}>{item}</li>)}
                 </ul>
             </div>}
-        </div>
+        </>
     );
 };
-
 
 const HLight: React.FC<{ isTop: boolean, color?: CardType }> = ({ isTop, color = 'Bystander' }) => {
     const lightColor = typeToColor[color];
@@ -168,5 +127,42 @@ const VLight: React.FC<{ isLeft: boolean, color?: CardType }> = ({ isLeft, color
         background: `linear-gradient(to bottom, ${lightColor} 5%, #FFF 45%, #FFF 55%, ${lightColor} 95%)`,
     }} />
 };
+
+interface BoardSectionProps {
+    teamName: string;
+    cards: CardType[][];
+    startColor: CardType;
+    defaultOpen?: boolean;
+}
+
+const BoardSection = ({teamName, cards, startColor, defaultOpen = false }: BoardSectionProps) => {
+    const [isBoardOpen, setIsBoardOpen] = useState<boolean>(defaultOpen);
+    return <Collapsible
+        tabIndex={0}
+        trigger={<CollapseButton label={teamName} isOpen={isBoardOpen} closeLabelOnOpen={false} />}
+        open={isBoardOpen}
+        handleTriggerClick={() => {
+            if (!isBoardOpen && window.confirm(`For ${teamName}'s eyes only - are you sure?`)) {
+                setIsBoardOpen(true);
+            }
+            if (isBoardOpen) {
+                setIsBoardOpen(false);
+            }
+        } }
+        containerElementProps={{
+            style: {
+                marginBottom: '48px',
+                border: '1px solid #555',
+                borderRadius: '16px',
+                padding: '16px',
+                boxShadow: '8px 8px 12px #2b2b2b',
+                minWidth: '490px',
+                flexGrow: 1,
+            }
+        }}
+    >
+        <SingleBoardView cards={cards} startColor={startColor} />
+    </Collapsible>;
+}
 
 export default BoardView;

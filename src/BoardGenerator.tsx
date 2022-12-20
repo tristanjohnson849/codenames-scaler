@@ -38,8 +38,16 @@ const BoardGenerator = () => {
             >
                 Source
             </a>
-            <BoardForm formData={formData} setFormData={(formData) => setFormDataAndHash(formData)}/>
-            {formData && <BoardView key={encodeFormData(formData)} layout={createLayout(formData)}/>}
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'stretch',
+                maxWidth: '1000px',
+                margin: 'auto'
+            }}>
+                <BoardForm formData={formData} setFormData={(formData) => setFormDataAndHash(formData)}/>
+                {formData && <BoardView key={encodeFormData(formData)} layout={createLayout(formData)}/>}
+            </div>
         </div>
     );
 }
