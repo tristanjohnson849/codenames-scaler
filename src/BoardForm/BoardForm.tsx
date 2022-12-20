@@ -129,7 +129,7 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
         const configuredCards = mode === 'Standard' 
             ? formData.cards * 2 + formData.startCards + formData.assassins
             : formData.cards + formData.assassins;
-        if (configuredCards >= totalCards) {
+        if (configuredCards > totalCards) {
             setErrorTimeout(`Too many configured cards (${configuredCards}) for this board (${formData.boardRows}x${formData.boardColumns}=${totalCards})`);
             return false;
         } else {
