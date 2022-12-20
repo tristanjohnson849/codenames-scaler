@@ -3,7 +3,7 @@ import BoardView from './BoardView';
 import BoardForm, { CodenamesFormData } from './BoardForm/BoardForm';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
-import { createLayout, decodeFormData, encodeFormData, getStartColor } from './BoardEncoding';
+import { createLayout, decodeFormData, encodeFormData } from './BoardEncoding';
 
 const BoardGenerator = () => {
     const params = useParams();

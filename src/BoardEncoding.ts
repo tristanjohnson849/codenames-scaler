@@ -6,6 +6,7 @@ import { CodenamesFormData, GameMode } from './BoardForm/BoardForm';
 import { CardType } from './BoardView';
 
 export type FormDataVersion = 0 | 1 | 2;
+// eslint-disable-next-line
 const UNKNOWN_VERSION = 0;
 const WRITE_VERSION = 2;
 
