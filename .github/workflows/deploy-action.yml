@@ -12,8 +12,13 @@ jobs:
       - uses: actions/checkout@v3
       
       # Config the git user to be used to commit deploy files to the last commit (from the push event)
-      - run: git config user.name "$(git log -n 1 --pretty=format:%an)"
-      - run: git config user.email "$(git log -n 1 --pretty=format:%ae)"
+      - name: Configure Deploy User
+        run: |
+          gitUser="$(git log -n 1 --pretty=format:%an)"
+          gitEmail="$(git log -n 1 --pretty=format:%ae)"
+          echo "Deploying with user $gitUser and email $gitEmail"
+          git config user.name "$(git log -n 1 --pretty=format:%an)"
+          git config user.email "$(git log -n 1 --pretty=format:%ae)"
       
       - run: npm install
       - run: npm run deploy
