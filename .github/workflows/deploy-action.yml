@@ -10,6 +10,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      
+      # Config the git user to be used to commit deploy files to the last commit (from the push event)
+      - run: git config user.name "$(git log -n 1 --pretty=format:%an)"
+      - run: git config user.email "$(git log -n 1 --pretty=format:%ae)"
+      
       - run: npm install
       - run: npm run deploy
             
