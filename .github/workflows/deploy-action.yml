@@ -19,10 +19,11 @@ jobs:
           echo "Deploying with user $gitUser and email $gitEmail"
           git config user.name $gitUser
           git config user.email $gitEmail
-          
+
       - name: Deploy
         run: |
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+          npm install
           npm run deploy -- -u "$gitUser $gitEmail"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
