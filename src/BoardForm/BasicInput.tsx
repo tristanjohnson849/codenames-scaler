@@ -6,7 +6,7 @@ export const BasicInput: React.FC<{ label: string; } & React.ComponentProps<"inp
 
     return (
         <label style={{ display: 'flex', flexDirection: 'column', margin: '8px' }}>
-            <span>{label} {defaultValue != undefined && (
+            <span>{label} {defaultValue !== undefined && (
                 <button
                     type="button"
                     style={{ ...linkButtonStyle, color: '#888', fontSize: '14px' }}

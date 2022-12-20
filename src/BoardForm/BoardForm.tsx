@@ -1,4 +1,4 @@
-import React, { CSSProperties, FormEvent, FormEventHandler, useState } from "react";
+import React, { FormEventHandler, useState } from "react";
 import Collapsible from "react-collapsible";
 import { typeToColor } from "../BoardView";
 import { BasicInput } from "./BasicInput";

@@ -1,4 +1,3 @@
-import { info } from "console";
 import React, { useState } from "react";
 import Collapsible from "react-collapsible";
 import { BoardLayout } from "./BoardEncoding";

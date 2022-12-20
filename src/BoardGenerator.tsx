@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import BoardView, { CardType } from './BoardView';
+import { useState } from 'react';
+import BoardView from './BoardView';
 import BoardForm, { CodenamesFormData } from './BoardForm/BoardForm';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';

@@ -140,7 +140,7 @@ const createStandardLayout = ({
     let step = 0;
     step = _fill(flatLayout, 'Blue', step, step + blueCards)
     step = _fill(flatLayout, 'Red', step, step + redCards);
-    step = _fill(flatLayout, 'Assassin', step, step + assassins);
+    _fill(flatLayout, 'Assassin', step, step + assassins);
 
     shuffle(flatLayout, rand);
 
