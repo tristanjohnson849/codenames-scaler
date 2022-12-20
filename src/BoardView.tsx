@@ -1,25 +1,36 @@
-import React from "react";
+import { info } from "console";
+import React, { useState } from "react";
+import Collapsible from "react-collapsible";
+import { BoardLayout } from "./BoardEncoding";
+import CollapseButton from "./BoardForm/CollapseButton";
 
-export type CardType = 'Blue' | 'Red' | 'Bystander' | 'Assassin';
+export type CardType = 'Blue' | 'Red' | 'Bystander' | 'Assassin' | 'DuetCorrect';
 
 export interface BoardProps {
-    layout: CardType[][];
-    startColor?: 'Red' | 'Blue';
+    layout: BoardLayout<CardType | CardType[]>;
 };
 
-const typeToColor: { [K in CardType]: string } = {
+export const typeToColor: { [K in CardType]: string } = {
     Blue: '#268bad',
     Red: '#c9461d',
     Bystander: '#af926e',
     Assassin: '#1b1b1b',
+    DuetCorrect: '#4CBB17'
 }
 
-const BoardView: React.FC<BoardProps> = ({ layout, startColor }) => (
+const BoardView: React.FC<BoardProps> = ({layout: { cards, mode, startColor, info }}) => (
+    mode === 'Standard'
+        ? <StandardBoardView cards={cards as CardType[][]} startColor={startColor}/>
+        : <DuetBoardView cards={cards as CardType[][][]} info={info}/>
+);
+
+
+const StandardBoardView: React.FC<{cards: CardType[][], startColor: CardType}> = ({ cards, startColor }) => (
     <div style={{
         position: 'relative',
         display: 'flex',
-        width: '80vh',
-        height: '80vh',
+        width: '75vh',
+        height: '75vh',
         margin: 'auto',
         padding: '32px',
         background: '#434343',
@@ -40,14 +51,14 @@ const BoardView: React.FC<BoardProps> = ({ layout, startColor }) => (
             border: '1px solid #777',
             padding: '8px',
         }}>
-            {layout.map((row) =>
-                <div style={{
+            {cards.map((row, colIndex) =>
+                <div key={colIndex} style={{
                     display: 'flex',
                     flexDirection: 'row',
                     flex: 1
                 }}>
-                    {row.map((cellType) =>
-                        <div style={{
+                    {row.map((cellType, rowIndex) =>
+                        <div key={`${colIndex}-${rowIndex}`} style={{
                             flex: 1,
                             background: typeToColor[cellType],
                             margin: '4px',
@@ -62,8 +73,73 @@ const BoardView: React.FC<BoardProps> = ({ layout, startColor }) => (
     </div>
 );
 
-const HLight: React.FC<{ isTop: boolean, color?: 'Blue' | 'Red' }> = ({ isTop, color }) => {
-    const lightColor = color ? typeToColor[color] : '#FFE800';
+const DuetBoardView: React.FC<{cards: CardType[][][], info?: string[]}> = ({ cards, info}) => {
+    const [isBoardOneOpen, setIsBoardOneOpen] = useState<boolean>(false);
+    const [isBoardTwoOpen, setIsBoardTwoOpen] = useState<boolean>(false);
+    return (
+        <div>
+            <Collapsible 
+                tabIndex={0}
+                trigger={<CollapseButton isOpen={isBoardOneOpen} label={"Team 1"} closeLabelOnOpen={false}/>}
+                open={isBoardOneOpen}
+                onTriggerOpening={() => {
+                    if (window.confirm("For Team 1's eyes only - are you sure?")) {
+                        setIsBoardOneOpen(true);
+                    }
+                }}                
+                onTriggerClosing={() => setIsBoardOneOpen(false)}
+                containerElementProps={{style: {
+                    maxWidth: '1200px',
+                    margin: '48px auto',
+                    border: '1px solid #555',
+                    borderRadius: '16px',
+                    padding: '16px',
+                    boxShadow: '8px 8px 12px #2b2b2b'
+                }}}
+            >
+                <StandardBoardView cards={cards.map(row => row.map(cell => cell[0]))} startColor="DuetCorrect"/>
+            </Collapsible>
+            <Collapsible 
+                tabIndex={0}
+                trigger={<CollapseButton label={"Team 2"} isOpen={isBoardTwoOpen} closeLabelOnOpen={false}/>}
+                open={isBoardTwoOpen}
+                onTriggerOpening={() => {
+                    if (window.confirm("For Team 2's eyes only - are you sure?")) {
+                        setIsBoardTwoOpen(true);
+                    }
+                }}
+                onTriggerClosing={() => setIsBoardTwoOpen(false)}
+                containerElementProps={{style: {
+                    maxWidth: '1200px',
+                    margin: '48px auto',
+                    border: '1px solid #555',
+                    borderRadius: '16px',
+                    padding: '16px',
+                    boxShadow: '8px 8px 12px #2b2b2b'
+                }}}
+            >
+                <StandardBoardView cards={cards.map(row => row.map(cell => cell[1]))} startColor="DuetCorrect"/>
+            </Collapsible>
+            {info && <div style={{
+                    maxWidth: '1200px',
+                    margin: '48px auto',
+                    border: '1px solid #555',
+                    borderRadius: '16px',
+                    padding: '16px',
+                    boxShadow: '8px 8px 12px #2b2b2b'
+                }}>
+                <h3>Board Info</h3>
+                <ul>
+                    {info.map(item => <li style={{ margin: '8px 0'}}>{item}</li>)}
+                </ul>
+            </div>}
+        </div>
+    );
+};
+
+
+const HLight: React.FC<{ isTop: boolean, color?: CardType }> = ({ isTop, color = 'Bystander' }) => {
+    const lightColor = typeToColor[color];
     return <div style={{
         position: 'absolute',
         top: isTop ? 0 : undefined,
@@ -78,8 +154,8 @@ const HLight: React.FC<{ isTop: boolean, color?: 'Blue' | 'Red' }> = ({ isTop, c
     }} />;
 };
 
-const VLight: React.FC<{ isLeft: boolean, color?: 'Blue' | 'Red' }> = ({ isLeft, color }) => {
-    const lightColor = color ? typeToColor[color] : '#FFE800';
+const VLight: React.FC<{ isLeft: boolean, color?: CardType }> = ({ isLeft, color = 'Bystander' }) => {
+    const lightColor = typeToColor[color];
     return <div style={{
         position: 'absolute',
         left: isLeft ? 0 : undefined,
