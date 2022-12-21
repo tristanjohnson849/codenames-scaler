@@ -1,5 +1,6 @@
 import React, { FormEventHandler, useState } from "react";
 import Collapsible from "react-collapsible";
+import { PAGE_SECTION_STYLE } from "../BoardGenerator";
 import { typeToColor } from "../BoardView";
 import { BasicInput } from "./BasicInput";
 import CollapseButton, {COLLAPSIBLE_EASING, COLLAPSIBLE_TIME} from "./CollapseButton";
@@ -147,13 +148,7 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
             onTriggerOpening={() => setIsCollapsibleOpen(true)}
             onTriggerClosing={() => setIsCollapsibleOpen(false)}
             trigger={<CollapseButton isOpen={isCollapsibleOpen} label="Game Config"/>}
-            containerElementProps={{style: {
-                margin: '48px 0',
-                border: '1px solid #555',
-                borderRadius: '16px',
-                padding: '16px',
-                boxShadow: '8px 8px 12px #2b2b2b',
-            }}}
+            containerElementProps={{style: PAGE_SECTION_STYLE}}
             transitionTime={COLLAPSIBLE_TIME}
             easing={COLLAPSIBLE_EASING}
         >

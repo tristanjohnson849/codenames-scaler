@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Collapsible from "react-collapsible";
 import { BoardLayout } from "./BoardEncoding";
 import CollapseButton from "./BoardForm/CollapseButton";
+import { PAGE_SECTION_STYLE } from "./BoardGenerator";
 
 export type CardType = 'Blue' | 'Red' | 'Bystander' | 'Assassin' | 'DuetCorrect';
 
@@ -148,17 +149,9 @@ const BoardSection = ({teamName, cards, startColor, defaultOpen = false }: Board
             if (isBoardOpen) {
                 setIsBoardOpen(false);
             }
-        } }
+        }}
         containerElementProps={{
-            style: {
-                marginBottom: '48px',
-                border: '1px solid #555',
-                borderRadius: '16px',
-                padding: '16px',
-                boxShadow: '8px 8px 12px #2b2b2b',
-                minWidth: '490px',
-                flexGrow: 1,
-            }
+            style: PAGE_SECTION_STYLE
         }}
     >
         <SingleBoardView cards={cards} startColor={startColor} />

@@ -1,9 +1,19 @@
-import { useState } from 'react';
+import { CSSProperties, useState } from 'react';
 import BoardView from './BoardView';
 import BoardForm, { CodenamesFormData } from './BoardForm/BoardForm';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import { createLayout, decodeFormData, encodeFormData } from './BoardEncoding';
+
+export const PAGE_SECTION_STYLE: CSSProperties = {
+    marginBottom: '48px',
+    border: '1px solid #555',
+    borderRadius: '16px',
+    padding: '16px',
+    boxShadow: '8px 8px 12px #2b2b2b',
+    minWidth: '490px',
+    flexGrow: 1,
+};
 
 const BoardGenerator = () => {
     const params = useParams();
