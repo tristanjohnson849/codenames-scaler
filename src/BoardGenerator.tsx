@@ -9,9 +9,9 @@ export const PAGE_SECTION_STYLE: CSSProperties = {
     marginBottom: '48px',
     border: '1px solid #555',
     borderRadius: '16px',
-    padding: '16px',
+    padding: '24px',
     boxShadow: '8px 8px 12px #2b2b2b',
-    minWidth: '490px',
+    minWidth: '586px',
     flexGrow: 1,
 };
 
