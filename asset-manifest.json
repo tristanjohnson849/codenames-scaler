@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/codenames-scaler/static/css/main.5ca74320.chunk.css",
-    "main.js": "/codenames-scaler/static/js/main.a8a759d4.chunk.js",
-    "main.js.map": "/codenames-scaler/static/js/main.a8a759d4.chunk.js.map",
+    "main.css": "/codenames-scaler/static/css/main.8c4036b6.chunk.css",
+    "main.js": "/codenames-scaler/static/js/main.67140b53.chunk.js",
+    "main.js.map": "/codenames-scaler/static/js/main.67140b53.chunk.js.map",
     "runtime-main.js": "/codenames-scaler/static/js/runtime-main.619b2f9b.js",
     "runtime-main.js.map": "/codenames-scaler/static/js/runtime-main.619b2f9b.js.map",
     "static/js/2.35b05bc1.chunk.js": "/codenames-scaler/static/js/2.35b05bc1.chunk.js",
@@ -10,13 +10,14 @@
     "static/js/3.8c3061b6.chunk.js": "/codenames-scaler/static/js/3.8c3061b6.chunk.js",
     "static/js/3.8c3061b6.chunk.js.map": "/codenames-scaler/static/js/3.8c3061b6.chunk.js.map",
     "index.html": "/codenames-scaler/index.html",
-    "static/css/main.5ca74320.chunk.css.map": "/codenames-scaler/static/css/main.5ca74320.chunk.css.map",
-    "static/js/2.35b05bc1.chunk.js.LICENSE.txt": "/codenames-scaler/static/js/2.35b05bc1.chunk.js.LICENSE.txt"
+    "static/css/main.8c4036b6.chunk.css.map": "/codenames-scaler/static/css/main.8c4036b6.chunk.css.map",
+    "static/js/2.35b05bc1.chunk.js.LICENSE.txt": "/codenames-scaler/static/js/2.35b05bc1.chunk.js.LICENSE.txt",
+    "static/media/rotate-image.0b60d7c6.svg": "/codenames-scaler/static/media/rotate-image.0b60d7c6.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.619b2f9b.js",
     "static/js/2.35b05bc1.chunk.js",
-    "static/css/main.5ca74320.chunk.css",
-    "static/js/main.a8a759d4.chunk.js"
+    "static/css/main.8c4036b6.chunk.css",
+    "static/js/main.67140b53.chunk.js"
   ]
 }
