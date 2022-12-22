@@ -1,10 +1,11 @@
 import React, { CSSProperties, useState } from "react";
 import { COLLAPSIBLE_EASING, COLLAPSIBLE_TIME } from "../BoardForm/CollapseButton";
-import { CardType, typeToColor } from "./index";
+import { typeToColor } from "./index";
 import { ReactComponent as RotateCounterClockwiseIcon } from '../img/rotate-image.svg';
+import { CardType, DisplayableLayout } from "../BoardLayout";
 
 
-const SingleBoardView: React.FC<{ cards: CardType[][]; startColor: CardType; }> = ({ cards, startColor }) => {
+const SingleBoardView: React.FC<{ layout: DisplayableLayout }> = ({ layout: { cards, startColor }}) => {
     const [boardRotation, setBoardRotation] = useState<number>(0);
 
     const rotate = (counterClockwise: boolean) => setBoardRotation(prevRotation => counterClockwise

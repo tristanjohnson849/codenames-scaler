@@ -3,7 +3,8 @@ import BoardView from './BoardView';
 import BoardForm, { CodenamesFormData } from './BoardForm/BoardForm';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
-import { createLayout, decodeFormData, encodeFormData } from './BoardEncoding';
+import { decodeFormData, encodeFormData } from './BoardEncoding';
+import { createLayout } from "./BoardLayout";
 import LinkSharer from './LinkSharer';
 
 export const PAGE_SECTION_STYLE: CSSProperties = {

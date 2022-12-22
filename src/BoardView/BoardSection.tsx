@@ -3,15 +3,14 @@ import Collapsible from "react-collapsible";
 import CollapseButton from "../BoardForm/CollapseButton";
 import { PAGE_SECTION_STYLE } from "../BoardGenerator";
 import SingleBoardView from "./SingleBoardView";
-import { CardType } from "./index";
+import { DisplayableLayout } from "../BoardLayout";
 
 interface BoardSectionProps {
+    layout: DisplayableLayout
     teamName: string;
-    cards: CardType[][];
-    startColor: CardType;
     defaultOpen?: boolean;
 }
-const BoardSection: React.FC<BoardSectionProps> = ({ teamName, cards, startColor, defaultOpen = false }) => {
+const BoardSection: React.FC<BoardSectionProps> = ({ teamName, layout, defaultOpen = false }) => {
     const [isBoardOpen, setIsBoardOpen] = useState<boolean>(defaultOpen);
     return <Collapsible
         tabIndex={0}
@@ -29,7 +28,7 @@ const BoardSection: React.FC<BoardSectionProps> = ({ teamName, cards, startColor
             style: PAGE_SECTION_STYLE
         }}
     >
-        <SingleBoardView cards={cards} startColor={startColor} />
+        <SingleBoardView layout={layout} />
     </Collapsible>;
 };
 

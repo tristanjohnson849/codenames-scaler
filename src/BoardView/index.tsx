@@ -1,13 +1,11 @@
 import React from "react";
-import { BoardLayout } from "../BoardEncoding";
+import { AnyBoardLayout, CardType, DisplayableLayout, DuetLayout, StandardLayout } from "../BoardLayout";
 import { PAGE_SECTION_STYLE } from "../BoardGenerator";
 import BoardSection from "./BoardSection";
 
 
-export type CardType = 'Blue' | 'Red' | 'Bystander' | 'Assassin' | 'DuetCorrect';
-
 export interface BoardProps {
-    layout: BoardLayout<CardType | CardType[]>;
+    layout: AnyBoardLayout;
 };
 
 export const typeToColor: { [K in CardType]: string } = {
@@ -18,25 +16,31 @@ export const typeToColor: { [K in CardType]: string } = {
     DuetCorrect: '#4CBB17'
 }
 
-const BoardView: React.FC<BoardProps> = ({layout: { cards, mode, startColor, info }}) => (
-    mode === 'Standard'
-        ? <BoardSection defaultOpen={true} teamName="Codemasters" startColor={startColor} cards={cards as CardType[][]}/>
-        : <DuetBoardView cards={cards as CardType[][][]} info={info}/>
+const BoardView: React.FC<BoardProps> = ({layout}) => (
+    layout.mode === 'Standard'
+        ? <BoardSection defaultOpen={true} teamName="Codemasters" layout={layout as StandardLayout}/>
+        : <DuetBoardView layout={layout as DuetLayout}/>
 );
 
-const DuetBoardView: React.FC<{cards: CardType[][][], info?: string[]}> = ({ cards, info}) => {
+const DuetBoardView: React.FC<{layout: DuetLayout}> = ({layout}) => {
     return (
         <>
-            <BoardSection teamName="Team 1" startColor="DuetCorrect" cards={cards.map(row => row.map(cell => cell[0]))}/>
-            <BoardSection teamName="Team 2" startColor="DuetCorrect" cards={cards.map(row => row.map(cell => cell[1]))}/>
-            {info && <div style={PAGE_SECTION_STYLE}>
+            <BoardSection teamName="Team 1" layout={getDisplayableDuetLayout(layout, 0)}/>
+            <BoardSection teamName="Team 2" layout={getDisplayableDuetLayout(layout, 1)}/>
+            {layout.info && <div style={PAGE_SECTION_STYLE}>
                 <h3>Board Info</h3>
                 <ul>
-                    {info.map(item => <li style={{ margin: '8px 0'}}>{item}</li>)}
+                    {layout.info.map(item => <li style={{ margin: '8px 0'}}>{item}</li>)}
                 </ul>
             </div>}
         </>
     );
 };
+
+const getDisplayableDuetLayout = (layout: DuetLayout, teamNumber: number): DisplayableLayout => ({
+    ...layout,
+    cards: layout.cards.map(row => row.map(cell => cell[teamNumber])),
+    startColor: 'DuetCorrect'
+});
 
 export default BoardView;
