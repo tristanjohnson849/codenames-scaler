@@ -90,14 +90,10 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
     const [newSeedOnGenerate, setNewSeedOnGenerate] = useState<boolean>(true);
     const [closeConfigOnGenerate, setCloseConfigOnGenerate] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [errorKey, setErrorKey] = useState<number>(0);
 
     const [isCollapsibleOpen, setIsCollapsibleOpen] = useState<boolean>(true);
     const [resetFormInputs, setResetFormInputs] = useState<boolean>(false);
-
-    const setErrorTimeout: typeof setError = (action) => {
-        setTimeout(() => setError(null), 6 * 1000);
-        setError(action);
-    }
 
     const setGameMode = (newMode: GameMode) => {
         if (mode !== newMode) {
@@ -115,6 +111,7 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
 
     const onFormSubmit: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
+        setErrorKey(prev => prev + 1);
         const formData: any = {};
         for (let [k, v] of (new FormData(e.currentTarget)).entries()) {
             formData[k] = /^\d+$/.test(v as string) ? parseInt(v as string) : v;
@@ -131,13 +128,14 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
             ? formData.cards * 2 + formData.startCards + formData.assassins
             : formData.cards + formData.assassins;
         if (configuredCards > totalCards) {
-            setErrorTimeout(`Too many configured cards (${configuredCards}) for this board (${formData.boardRows}x${formData.boardColumns}=${totalCards})`);
+            setError(`Too many configured cards (${configuredCards}) for this board (${formData.boardRows}x${formData.boardColumns}=${totalCards})`);
             return false;
         } else {
             if (closeConfigOnGenerate) {
                 setIsCollapsibleOpen(false);
             }
             setFormData(formData);
+            setError(null);
         }
     };
 
@@ -231,8 +229,18 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
                         }}>
                         Reset Defaults
                     </button>
-                    {error && <span className="fade-out" style={{ color: '#c9461d' }}>{error}</span>}
                 </Collapsible>
+                <div 
+                    key={errorKey} 
+                    style={{ 
+                        color: '#c9461d', 
+                        animationName: 'fadeOut', 
+                        animationDuration: '6s', 
+                        animationFillMode: 'forwards',
+                        marginTop: '16px'
+                    }}>
+                        {error}
+                </div>
             </form>
         </Collapsible>
     );

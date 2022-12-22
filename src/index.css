@@ -35,4 +35,5 @@ button {
 .fade-out {
     animation-name: fadeOut;
     animation-duration: 6s;
+    animation-fill-mode:forwards;
 }

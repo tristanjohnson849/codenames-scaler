@@ -4,6 +4,7 @@ import BoardForm, { CodenamesFormData } from './BoardForm/BoardForm';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import { createLayout, decodeFormData, encodeFormData } from './BoardEncoding';
+import LinkSharer from './LinkSharer';
 
 export const PAGE_SECTION_STYLE: CSSProperties = {
     marginBottom: '48px',
@@ -56,6 +57,7 @@ const BoardGenerator = () => {
                 margin: 'auto'
             }}>
                 <BoardForm formData={formData} setFormData={(formData) => setFormDataAndHash(formData)}/>
+                <LinkSharer />
                 {formData && <BoardView key={encodeFormData(formData)} layout={createLayout(formData)}/>}
             </div>
         </div>
