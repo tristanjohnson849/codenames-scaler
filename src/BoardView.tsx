@@ -32,9 +32,11 @@ const SingleBoardView: React.FC<{cards: CardType[][], startColor: CardType}> = (
 
     const rotate = (counterClockwise: boolean) => setBoardRotation(prevRotation => 
         counterClockwise 
-            ? prevRotation - 90 % 360
-            : prevRotation + 90 % 360
+            ? prevRotation - 90
+            : prevRotation + 90
         );
+    // subtract rotation % 360 for correcct animations, if used 0 would spin through all rotations
+    const resetRotation = () => setBoardRotation(prevRotation => prevRotation - (prevRotation % 360));
     return (
         <div style={{
             position: 'relative',
@@ -55,7 +57,7 @@ const SingleBoardView: React.FC<{cards: CardType[][], startColor: CardType}> = (
                 transform: `rotate(${boardRotation}deg)`,
                 transition: 'transform 400ms ease-in-out'
             }}>
-                <HLight isTop={true} color={startColor} resetRotation={() => setBoardRotation(0)}/>
+                <HLight isTop={true} color={startColor} resetRotation={resetRotation} />
                 <HLight isTop={false} color={startColor} />
                 <VLight isLeft={true} color={startColor} />
                 <VLight isLeft={false} color={startColor} />
