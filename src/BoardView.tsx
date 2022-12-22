@@ -55,7 +55,8 @@ const SingleBoardView: React.FC<{cards: CardType[][], startColor: CardType}> = (
                 border: '1px solid #777',
                 boxShadow: '8px 8px 12px #2b2b2b',
                 transform: `rotate(${boardRotation}deg)`,
-                transition: `transform ${COLLAPSIBLE_TIME} ${COLLAPSIBLE_EASING}`
+                transition: `transform ${COLLAPSIBLE_TIME}`,
+                transitionTimingFunction: COLLAPSIBLE_EASING
             }}>
                 <HLight isTop={true} color={startColor} resetRotation={resetRotation} />
                 <HLight isTop={false} color={startColor} />
