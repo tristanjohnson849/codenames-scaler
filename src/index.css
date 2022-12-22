@@ -36,23 +36,3 @@ button {
     animation-name: fadeOut;
     animation-duration: 6s;
 }
-
-@keyframes rotateCounterClockwise {
-    0% {transform: rotate(0deg)}
-    100% {transform: rotate(90deg)}
-}
- 
-@keyframes rotateClockwise {
-    0% {transform: rotate(0deg)}
-    100% {transform: rotate(-90deg)}
-}
-
-.rotate-counter-clockwise {
-    animation-name: rotateCounterClockwise;
-    animation-duration: 400ms;
-}
-
-.rotate-clockwise {
-    animation-name: rotateClockwise;
-    animation-duration: 400ms;
-}
