@@ -55,7 +55,7 @@ const SingleBoardView: React.FC<{cards: CardType[][], startColor: CardType}> = (
                 border: '1px solid #777',
                 boxShadow: '8px 8px 12px #2b2b2b',
                 transform: `rotate(${boardRotation}deg)`,
-                transition: `transform ${COLLAPSIBLE_TIME}`,
+                transition: `transform ${COLLAPSIBLE_TIME}ms`,
                 transitionTimingFunction: COLLAPSIBLE_EASING
             }}>
                 <HLight isTop={true} color={startColor} resetRotation={resetRotation} />
@@ -177,8 +177,8 @@ const HLight: React.FC<{ isTop: boolean, color?: CardType, resetRotation?: () =>
                     background: `#363636`,
                     height: '32px',
                 }}/>
-                <div style={{ position: 'absolute', transform: 'rotateZ(180deg)', left: '16px', top: '4px'}}>⋁</div>
-                <div style={{ position: 'absolute', transform: 'rotateZ(180deg)', right: '16px', top: '4px'}}>⋁</div>
+                <div style={{ position: 'absolute', transform: 'rotateZ(180deg)', left: '8px', top: '4px'}}>⋁</div>
+                <div style={{ position: 'absolute', transform: 'rotateZ(180deg)', right: '8px', top: '4px'}}>⋁</div>
             </div>
         )}
     </>);
