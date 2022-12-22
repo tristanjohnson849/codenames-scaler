@@ -1,40 +1,16 @@
 import React, { CSSProperties, useState } from "react";
-import Collapsible from "react-collapsible";
-import { BoardLayout } from "./BoardEncoding";
-import CollapseButton, { COLLAPSIBLE_EASING, COLLAPSIBLE_TIME } from "./BoardForm/CollapseButton";
-import { PAGE_SECTION_STYLE } from "./BoardGenerator";
-
-import { ReactComponent as RotateCounterClockwiseIcon } from './img/rotate-image.svg';
-
-export type CardType = 'Blue' | 'Red' | 'Bystander' | 'Assassin' | 'DuetCorrect';
-
-export interface BoardProps {
-    layout: BoardLayout<CardType | CardType[]>;
-};
-
-export const typeToColor: { [K in CardType]: string } = {
-    Blue: '#268bad',
-    Red: '#c9461d',
-    Bystander: '#af926e',
-    Assassin: '#1b1b1b',
-    DuetCorrect: '#4CBB17'
-}
-
-const BoardView: React.FC<BoardProps> = ({layout: { cards, mode, startColor, info }}) => (
-    mode === 'Standard'
-        ? <BoardSection defaultOpen={true} teamName="Codemasters" startColor={startColor} cards={cards as CardType[][]}/>
-        : <DuetBoardView cards={cards as CardType[][][]} info={info}/>
-);
+import { COLLAPSIBLE_EASING, COLLAPSIBLE_TIME } from "../BoardForm/CollapseButton";
+import { CardType, typeToColor } from "./index";
+import { ReactComponent as RotateCounterClockwiseIcon } from '../img/rotate-image.svg';
 
 
-const SingleBoardView: React.FC<{cards: CardType[][], startColor: CardType}> = ({ cards, startColor }) => {
+const SingleBoardView: React.FC<{ cards: CardType[][]; startColor: CardType; }> = ({ cards, startColor }) => {
     const [boardRotation, setBoardRotation] = useState<number>(0);
 
-    const rotate = (counterClockwise: boolean) => setBoardRotation(prevRotation => 
-        counterClockwise 
-            ? prevRotation - 90
-            : prevRotation + 90
-        );
+    const rotate = (counterClockwise: boolean) => setBoardRotation(prevRotation => counterClockwise
+        ? prevRotation - 90
+        : prevRotation + 90
+    );
     // subtract rotation % 360 for correcct animations, if used 0 would spin through all rotations
     const resetRotation = () => setBoardRotation(prevRotation => prevRotation - (prevRotation % 360));
     return (
@@ -73,23 +49,21 @@ const SingleBoardView: React.FC<{cards: CardType[][], startColor: CardType}> = (
                     border: '1px solid #777',
                     padding: '8px'
                 }}>
-                    {cards.map((row, colIndex) =>
-                        <div key={colIndex} style={{
-                            display: 'flex',
-                            flexDirection: 'row',
-                            flex: 1
-                        }}>
-                            {row.map((cellType, rowIndex) =>
-                                <div key={`${colIndex}-${rowIndex}`} style={{
-                                    flex: 1,
-                                    background: typeToColor[cellType],
-                                    margin: '4px',
-                                    borderRadius: '12px',
-                                    boxShadow: '6px 6px 8px #1c1c1c',
-                                    border: '1px solid #555'
-                                }} />
-                            )}
-                        </div>
+                    {cards.map((row, colIndex) => <div key={colIndex} style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        flex: 1
+                    }}>
+                        {row.map((cellType, rowIndex) => <div key={`${colIndex}-${rowIndex}`} style={{
+                            flex: 1,
+                            background: typeToColor[cellType],
+                            margin: '4px',
+                            borderRadius: '12px',
+                            boxShadow: '6px 6px 8px #1c1c1c',
+                            border: '1px solid #555'
+                        }} />
+                        )}
+                    </div>
                     )}
                 </div>
             </div>
@@ -105,7 +79,7 @@ interface RotateButtonProps {
     style?: CSSProperties;
 }
 
-const RotateButton: React.FC<RotateButtonProps> = ({ 
+export const RotateButton: React.FC<RotateButtonProps> = ({ 
     rotate,
     counterClockwise = true, 
     style={}
@@ -124,22 +98,7 @@ const RotateButton: React.FC<RotateButtonProps> = ({
     );
 }
 
-const DuetBoardView: React.FC<{cards: CardType[][][], info?: string[]}> = ({ cards, info}) => {
-    return (
-        <>
-            <BoardSection teamName="Team 1" startColor="DuetCorrect" cards={cards.map(row => row.map(cell => cell[0]))}/>
-            <BoardSection teamName="Team 2" startColor="DuetCorrect" cards={cards.map(row => row.map(cell => cell[1]))}/>
-            {info && <div style={PAGE_SECTION_STYLE}>
-                <h3>Board Info</h3>
-                <ul>
-                    {info.map(item => <li style={{ margin: '8px 0'}}>{item}</li>)}
-                </ul>
-            </div>}
-        </>
-    );
-};
-
-const HLight: React.FC<{ isTop: boolean, color?: CardType, resetRotation?: () => void }> = ({ isTop, resetRotation = null, color = 'Bystander' }) => {
+export const HLight: React.FC<{ isTop: boolean, color?: CardType, resetRotation?: () => void }> = ({ isTop, resetRotation = null, color = 'Bystander' }) => {
     const lightColor = typeToColor[color];
     return (<>
         <div style={{
@@ -184,7 +143,7 @@ const HLight: React.FC<{ isTop: boolean, color?: CardType, resetRotation?: () =>
     </>);
 };
 
-const VLight: React.FC<{ isLeft: boolean, color?: CardType }> = ({ isLeft, color = 'Bystander' }) => {
+export const VLight: React.FC<{ isLeft: boolean, color?: CardType }> = ({ isLeft, color = 'Bystander' }) => {
     const lightColor = typeToColor[color];
     return <div style={{
         position: 'absolute',
@@ -200,33 +159,4 @@ const VLight: React.FC<{ isLeft: boolean, color?: CardType }> = ({ isLeft, color
     }} />
 };
 
-interface BoardSectionProps {
-    teamName: string;
-    cards: CardType[][];
-    startColor: CardType;
-    defaultOpen?: boolean;
-}
-
-const BoardSection = ({teamName, cards, startColor, defaultOpen = false }: BoardSectionProps) => {
-    const [isBoardOpen, setIsBoardOpen] = useState<boolean>(defaultOpen);
-    return <Collapsible
-        tabIndex={0}
-        trigger={<CollapseButton label={teamName} isOpen={isBoardOpen} closeLabelOnOpen={false} />}
-        open={isBoardOpen}
-        handleTriggerClick={() => {
-            if (!isBoardOpen && window.confirm(`For ${teamName}'s eyes only - are you sure?`)) {
-                setIsBoardOpen(true);
-            }
-            if (isBoardOpen) {
-                setIsBoardOpen(false);
-            }
-        }}
-        containerElementProps={{
-            style: PAGE_SECTION_STYLE
-        }}
-    >
-        <SingleBoardView cards={cards} startColor={startColor} />
-    </Collapsible>;
-}
-
-export default BoardView;
+export default SingleBoardView;
