@@ -26,6 +26,8 @@ const BoardGenerator = () => {
     const [formData, setFormData] = useState<CodenamesFormData | undefined>(initialFormData);
     const navigate = useNavigate();
 
+    const hash = formData ? encodeFormData(formData) : undefined;
+
     const setFormDataAndHash = (newFormData: CodenamesFormData) => {
         setFormData(newFormData);
         navigate(`/${encodeFormData(newFormData)}`)
@@ -57,8 +59,8 @@ const BoardGenerator = () => {
                 margin: 'auto'
             }}>
                 <BoardForm formData={formData} setFormData={(formData) => setFormDataAndHash(formData)}/>
-                {formData && <LinkSharer />}
-                {formData && <BoardView key={encodeFormData(formData)} layout={createLayout(formData)}/>}
+                {formData && <LinkSharer key={hash}/>}
+                {formData && <BoardView key={hash} layout={createLayout(formData)}/>}
             </div>
         </div>
     );
