@@ -30,9 +30,9 @@ button {
     0% {opacity: 1;}
     50% {opacity: 1;}
     100% {opacity: 0;}
- }
+}
  
- .fade-out {
+.fade-out {
     animation-name: fadeOut;
     animation-duration: 6s;
- }
+}
