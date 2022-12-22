@@ -1,7 +1,7 @@
 import React, { CSSProperties, useState } from "react";
 import Collapsible from "react-collapsible";
 import { BoardLayout } from "./BoardEncoding";
-import CollapseButton from "./BoardForm/CollapseButton";
+import CollapseButton, { COLLAPSIBLE_EASING, COLLAPSIBLE_TIME } from "./BoardForm/CollapseButton";
 import { PAGE_SECTION_STYLE } from "./BoardGenerator";
 
 import { ReactComponent as RotateCounterClockwiseIcon } from './img/rotate-image.svg';
@@ -55,7 +55,7 @@ const SingleBoardView: React.FC<{cards: CardType[][], startColor: CardType}> = (
                 border: '1px solid #777',
                 boxShadow: '8px 8px 12px #2b2b2b',
                 transform: `rotate(${boardRotation}deg)`,
-                transition: 'transform 400ms ease-in-out'
+                transition: `transform ${COLLAPSIBLE_TIME} ${COLLAPSIBLE_EASING}`
             }}>
                 <HLight isTop={true} color={startColor} resetRotation={resetRotation} />
                 <HLight isTop={false} color={startColor} />
@@ -128,13 +128,7 @@ const DuetBoardView: React.FC<{cards: CardType[][][], info?: string[]}> = ({ car
         <>
             <BoardSection teamName="Team 1" startColor="DuetCorrect" cards={cards.map(row => row.map(cell => cell[0]))}/>
             <BoardSection teamName="Team 2" startColor="DuetCorrect" cards={cards.map(row => row.map(cell => cell[1]))}/>
-            {info && <div style={{
-                    margin: 'auto',
-                    border: '1px solid #555',
-                    borderRadius: '16px',
-                    padding: '16px',
-                    boxShadow: '8px 8px 12px #2b2b2b'
-                }}>
+            {info && <div style={PAGE_SECTION_STYLE}>
                 <h3>Board Info</h3>
                 <ul>
                     {info.map(item => <li style={{ margin: '8px 0'}}>{item}</li>)}
