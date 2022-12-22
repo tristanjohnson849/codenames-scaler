@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { PAGE_SECTION_STYLE } from "./BoardGenerator";
 import { ReactComponent as CopyIcon } from './img/copy.svg';
 import { ReactComponent as ShareIcon } from './img/share.svg';
 
