@@ -54,6 +54,7 @@ const DuetBreakdown = ({ layout }: { layout: DuetLayout }) => {
                     justifyContent: 'center',
                 }}>
                     <MiniCard cardType={team1Card} />
+                    <hr style={{ height: '12px'}}/>
                     <MiniCard cardType={team2Card} />
                 </div>
             ))}
@@ -66,7 +67,7 @@ const MiniCard = ({ cardType }: { cardType: CardType }) => (
         style={{
             background: typeToColor[cardType],
             borderRadius: '2px',
-            margin: '4px',
+            margin: '0 4px',
             flexGrow: 1
         }}
     />
