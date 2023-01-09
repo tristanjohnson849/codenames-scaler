@@ -56,17 +56,17 @@ const createDuetLayout = ({
 
     const goalBothCorrect = Math.floor(cards/3)
     const goalCorrectAssassin = Math.floor(assassins/3);
-    const goalBystanderAssassin = Math.floor(bystanders/2);
+    const goalCorrectBystander = Math.floor(bystanders/2);
 
-    const bothCorrect = Math.max(goalBothCorrect, cards - (goalCorrectAssassin + goalBystanderAssassin));
+    const bothCorrect = Math.max(goalBothCorrect, cards - (goalCorrectAssassin + goalCorrectBystander));
 
     let correctBystanders;
     let correctAssassins;
     if (bystanders < assassins) {
-        correctBystanders = Math.min(cards - bothCorrect, Math.floor(bystanders / 2));
+        correctBystanders = Math.min(cards - bothCorrect, goalCorrectBystander);
         correctAssassins = cards - (bothCorrect + correctBystanders);
     } else {
-        correctAssassins = Math.min(cards - bothCorrect, Math.floor(assassins / 3));
+        correctAssassins = Math.min(cards - bothCorrect, goalCorrectAssassin);
         correctBystanders = cards - (bothCorrect + correctAssassins);
     }
 
