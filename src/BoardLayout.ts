@@ -119,12 +119,3 @@ export const seededRandomInt = (seed: string): (min: number, max: number) => num
     const rand = seedrandom(seed);
     return (min: number, max: number): number => Math.floor(rand() * (max - min + 1) + min);
 };
-
-
-
-fun doStuff() {
-    if (condition) {
-        doWork()
-    } else {
-        doOtherStuff()
-    }
