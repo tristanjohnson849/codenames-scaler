@@ -51,21 +51,33 @@ const createDuetLayout = ({
 }: CodenamesFormData): DuetLayout => {
     const rand = seededRandomInt(seed);
 
-    // 1/3 of team cards should overlap
-    const bothCorrect = Math.floor(cards / 3);
-    // try to use 1/3 of assassins, but don't exceed remaining correct
-    const correctAssassins = Math.min(cards - bothCorrect, Math.floor(assassins / 3));
-    // correct/bystander is remainder
-    const correctBystanders = cards - (bothCorrect + correctAssassins);
+    const boardSize = boardRows * boardColumns;
+    const bystanders = boardSize - (cards + assassins);
 
-    const remainderAfterCorrect = (boardRows * boardColumns) - (bothCorrect + 2 * correctAssassins + 2 * correctBystanders);
+    const goalBothCorrect = Math.floor(cards/3)
+    const goalCorrectAssassin = Math.floor(assassins/3);
+    const goalCorrectBystander = Math.floor(bystanders/2);
 
-    // try to split assassins between doubled and bystander, but use doubled if not enough bystanders left
+    const bothCorrect = Math.max(goalBothCorrect, cards - (goalCorrectAssassin + goalCorrectBystander));
+
+    let correctBystanders;
+    let correctAssassins;
+    if (bystanders < assassins) {
+        correctBystanders = Math.min(cards - bothCorrect, goalCorrectBystander);
+        correctAssassins = cards - (bothCorrect + correctBystanders);
+    } else {
+        correctAssassins = Math.min(cards - bothCorrect, goalCorrectAssassin);
+        correctBystanders = cards - (bothCorrect + correctAssassins);
+    }
+
     const remainingAssassins = assassins - correctAssassins;
-    const bystanderAssassins = Math.min(Math.floor(remainingAssassins / 2), remainderAfterCorrect - remainingAssassins);
-    const bothAssassins = remainingAssassins - bystanderAssassins;
+    const remainingBystanders = bystanders - correctBystanders;
 
-    const flatLayout: CardType[][] = fill(Array(boardRows * boardColumns), ['Bystander', 'Bystander']);
+    const bystanderAssassins = Math.min(Math.floor(remainingAssassins/2), Math.floor(remainingBystanders/2));
+    const bothAssassins = remainingAssassins - bystanderAssassins;
+    const bothBystander = remainingBystanders - bystanderAssassins;
+
+    const flatLayout: CardType[][] = fill(Array(boardSize), ['Bystander', 'Bystander']);
     let step = 0;
     step = _fill(flatLayout, ['DuetCorrect', 'DuetCorrect'], step, step + bothCorrect);
     step = _fill(flatLayout, ['DuetCorrect', 'Assassin'], step, step + correctAssassins);
@@ -74,7 +86,7 @@ const createDuetLayout = ({
     step = _fill(flatLayout, ['Bystander', 'DuetCorrect'], step, step + correctBystanders);
     step = _fill(flatLayout, ['Assassin', 'Assassin'], step, step + bothAssassins);
     step = _fill(flatLayout, ['Bystander', 'Assassin'], step, step + bystanderAssassins);
-    step = _fill(flatLayout, ['Assassin', 'Bystander'], step, step + bystanderAssassins);
+    _fill(flatLayout, ['Assassin', 'Bystander'], step, step + bystanderAssassins);
 
     shuffle(flatLayout, rand);
     return {
@@ -87,7 +99,7 @@ const createDuetLayout = ({
             `Correct / Bystander: ${correctBystanders} per team`,
             `Assassin / Assassin: ${bothAssassins} total`,
             `Assassin / Bystander: ${bystanderAssassins} per team`,
-            `Bystander / Bystander: ${boardRows * boardColumns - step} total`,
+            `Bystander / Bystander: ${bothBystander} total`,
         ]
     };
 };

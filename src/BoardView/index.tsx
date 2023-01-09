@@ -2,6 +2,7 @@ import React from "react";
 import { AnyBoardLayout, CardType, DisplayableLayout, DuetLayout, StandardLayout } from "../BoardLayout";
 import { PAGE_SECTION_STYLE } from "../BoardGenerator";
 import BoardSection from "./BoardSection";
+import DuetBreakdown from "./DuetBreakdown";
 
 
 export interface BoardProps {
@@ -32,6 +33,7 @@ const DuetBoardView: React.FC<{layout: DuetLayout}> = ({layout}) => {
                 <ul>
                     {layout.info.map(item => <li style={{ margin: '8px 0'}}>{item}</li>)}
                 </ul>
+                <DuetBreakdown layout={layout}/>
             </div>}
         </>
     );
