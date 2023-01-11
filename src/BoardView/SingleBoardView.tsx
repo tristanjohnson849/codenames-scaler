@@ -13,7 +13,11 @@ const SingleBoardView: React.FC<{ layout: DisplayableLayout }> = ({ layout: { ca
         : prevRotation + 90
     );
     // subtract rotation % 360 for correcct animations, if used 0 would spin through all rotations
-    const resetRotation = () => setBoardRotation(prevRotation => prevRotation - (prevRotation % 360));
+    // add 360 if mod > 180 to turn towards the closest direction
+    const resetRotation = () => setBoardRotation(prevRotation => {
+        const mod = prevRotation % 360;
+        return prevRotation - mod + (mod > 180 ? 360 : 0);
+    });
     return (
         <div style={{
             position: 'relative',
