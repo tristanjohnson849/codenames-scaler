@@ -27,8 +27,6 @@ const BoardGenerator = () => {
     const [formData, setFormData] = useState<CodenamesFormData | undefined>(initialFormData);
     const navigate = useNavigate();
 
-    const hash = formData ? encodeFormData(formData) : undefined;
-
     const setFormDataAndHash = (newFormData: CodenamesFormData) => {
         setFormData(newFormData);
         navigate(`/${encodeFormData(newFormData)}`)
