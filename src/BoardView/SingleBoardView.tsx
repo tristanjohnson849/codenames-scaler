@@ -137,8 +137,8 @@ export const HLight: React.FC<{ isTop: boolean, color?: CardType, resetRotation?
                     background: `#363636`,
                     height: '32px',
                 }}/>
-                <div style={{ position: 'absolute', transform: 'rotateZ(180deg)', left: '8px', top: '4px'}}>⋁</div>
-                <div style={{ position: 'absolute', transform: 'rotateZ(180deg)', right: '8px', top: '4px'}}>⋁</div>
+                <div style={{ position: 'absolute', transform: 'rotateZ(180deg)', left: '6%', top: '4px'}}>⋁</div>
+                <div style={{ position: 'absolute', transform: 'rotateZ(180deg)', right: '6%', top: '4px'}}>⋁</div>
             </div>
         )}
     </>);
