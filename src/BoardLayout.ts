@@ -1,7 +1,7 @@
 import chunk from 'lodash/chunk';
 import fill from 'lodash/fill';
 import seedrandom from 'seedrandom';
-import { CodenamesFormData, GameMode } from './BoardForm/BoardForm';
+import { CodenamesFormData, DuetFormData, GameMode, StandardFormData } from './BoardForm/BoardForm';
 
 
 export type CardType = 'Blue' | 'Red' | 'Bystander' | 'Assassin' | 'DuetCorrect';
@@ -15,20 +15,20 @@ export interface BoardLayout<M extends GameMode, C> {
 export type StandardLayout = BoardLayout<'Standard', CardType>
 export type DuetLayout = BoardLayout<'Duet', CardType[]>
 
-export type AnyBoardLayout = 
-    StandardLayout | 
+export type AnyBoardLayout =
+    StandardLayout |
     DuetLayout;
 
 export type DisplayableLayout = BoardLayout<any, CardType>
 
 export const createLayout = (formData: CodenamesFormData): AnyBoardLayout => (
     formData.mode === 'Standard'
-        ? createStandardLayout(formData)
-        : createDuetLayout(formData)
+        ? createStandardLayout(formData as StandardFormData)
+        : createDuetLayout(formData as DuetFormData)
 );
 const createStandardLayout = ({
     boardRows, boardColumns, cards, startCards, startColor, assassins, seed
-}: CodenamesFormData): StandardLayout => {
+}: StandardFormData): StandardLayout => {
     const rand = seededRandomInt(seed);
 
     const actualStartColor = getStartColor(startColor, seed);
@@ -47,37 +47,22 @@ const createStandardLayout = ({
 };
 
 const createDuetLayout = ({
-    boardRows, boardColumns, cards, assassins, seed,
-}: CodenamesFormData): DuetLayout => {
+    boardRows,
+    boardColumns,
+    seed,
+    cards,
+    correctAssassins,
+    correctBystanders,
+    bystanderAssassins
+}: DuetFormData): DuetLayout => {
     const rand = seededRandomInt(seed);
 
-    const boardSize = boardRows * boardColumns;
-    const bystanders = boardSize - (cards + assassins);
+    const bothCorrect = cards - (correctAssassins + correctBystanders);
+    const bothAssassins = cards - (correctAssassins + bystanderAssassins);
+    const bothBystander = cards - (correctBystanders + bystanderAssassins);
 
-    const goalBothCorrect = Math.floor(cards/3)
-    const goalCorrectAssassin = Math.floor(assassins/3);
-    const goalCorrectBystander = Math.floor(bystanders/2);
 
-    const bothCorrect = Math.max(goalBothCorrect, cards - (goalCorrectAssassin + goalCorrectBystander));
-
-    let correctBystanders;
-    let correctAssassins;
-    if (bystanders < assassins) {
-        correctBystanders = Math.min(cards - bothCorrect, goalCorrectBystander);
-        correctAssassins = cards - (bothCorrect + correctBystanders);
-    } else {
-        correctAssassins = Math.min(cards - bothCorrect, goalCorrectAssassin);
-        correctBystanders = cards - (bothCorrect + correctAssassins);
-    }
-
-    const remainingAssassins = assassins - correctAssassins;
-    const remainingBystanders = bystanders - correctBystanders;
-
-    const bystanderAssassins = Math.min(Math.floor(remainingAssassins/2), Math.floor(remainingBystanders/2));
-    const bothAssassins = remainingAssassins - bystanderAssassins;
-    const bothBystander = remainingBystanders - bystanderAssassins;
-
-    const flatLayout: CardType[][] = fill(Array(boardSize), ['Bystander', 'Bystander']);
+    const flatLayout: CardType[][] = fill(Array(boardRows * boardColumns), ['Bystander', 'Bystander']);
     let step = 0;
     step = _fill(flatLayout, ['DuetCorrect', 'DuetCorrect'], step, step + bothCorrect);
     step = _fill(flatLayout, ['DuetCorrect', 'Assassin'], step, step + correctAssassins);
@@ -102,6 +87,27 @@ const createDuetLayout = ({
             `Bystander / Bystander: ${bothBystander} total`,
         ]
     };
+};
+
+export interface DuetOverlaps {
+    correctAssassins: number;
+    correctBystanders: number;
+    bystanderAssassins: number;
+}
+
+export const getDefaultOverlaps = (
+    boardRows: number,
+    boardColumns: number,
+    cards: number,
+    assassins: number
+): DuetOverlaps => {
+    const bystanders = boardRows * boardColumns - (cards + assassins);
+
+    return {
+        correctAssassins: Math.min(Math.floor(cards / 5), Math.floor(assassins / 3)),
+        correctBystanders: Math.min(Math.floor(cards / 1.5), Math.floor(bystanders / 2)),
+        bystanderAssassins: Math.min(Math.floor(bystanders / 7), Math.floor(assassins / 3)),
+    }
 };
 
 export const getStartColor = (

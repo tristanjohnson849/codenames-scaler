@@ -1,6 +1,7 @@
 import React, { FormEventHandler, useState } from "react";
 import Collapsible from "react-collapsible";
 import { PAGE_SECTION_STYLE } from "../BoardGenerator";
+import { getDefaultOverlaps } from "../BoardLayout";
 import { typeToColor } from "../BoardView";
 import { BasicInput } from "./BasicInput";
 import CollapseButton, {COLLAPSIBLE_EASING, COLLAPSIBLE_TIME} from "./CollapseButton";
@@ -14,19 +15,32 @@ export interface CodenamesFormData {
     boardRows: number;
     boardColumns: number;
     cards: number;
-    startCards: number;
     assassins: number;
-    startColor: 'Blue' | 'Red' | 'Random';
     seed: string;
     mode: GameMode;
     [key: string]: string | number;
+}
+
+export const StartColors = ['Blue', 'Red', 'Random'] as const;
+
+export interface StandardFormData extends CodenamesFormData {
+    mode: 'Standard';
+    startCards: number;
+    startColor: typeof StartColors[number];
+}
+
+export interface DuetFormData extends CodenamesFormData {
+    mode: 'Duet';
+    correctAssassins: number;
+    correctBystanders: number;
+    bystanderAssassins: number;
 }
 
 export interface ModeConfig {
     mode: GameMode;
     
 }
-  
+
 export interface BoardFormProps {
     formData?: CodenamesFormData;
     setFormData: (formData: CodenamesFormData) => void
@@ -109,6 +123,12 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
         _setGameMode(newMode);
     };
 
+    const {
+        correctAssassins,
+        correctBystanders,
+        bystanderAssassins
+    } = getDefaultOverlaps(rows, columns, cards, assassins);
+
     const onFormSubmit: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
         setErrorKey(prev => prev + 1);
@@ -122,11 +142,12 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
             formData.seed = newSeed;
             setSeed(newSeed);
         }
-        const totalCards = formData.boardRows * formData.boardColumns;
 
+        const totalCards = formData.boardRows * formData.boardColumns;
         const configuredCards = mode === 'Standard' 
             ? formData.cards * 2 + formData.startCards + formData.assassins
             : formData.cards + formData.assassins;
+            
         if (configuredCards > totalCards) {
             setError(`Too many configured cards (${configuredCards}) for this board (${formData.boardRows}x${formData.boardColumns}=${totalCards})`);
             return false;
@@ -186,6 +207,13 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
                         <InputCard title="Game">
                             <BasicInput label="Team Cards" type="number" name="cards" value={cards} onChange={(e) => setCards(parseInt(e.target.value))} defaultValue={suggestedCards(rows, columns, mode)} />
                             <BasicInput label="Assassins" type="number" name="assassins" value={assassins} onChange={(e) => setAssassins(parseInt(e.target.value))} defaultValue={suggestedAssassins(rows, columns, mode)} />
+                            {mode === 'Duet' && (
+                                <>
+                                    <BasicInput label="Correct/Assassin" type="number" name="correctAssassins" value={correctAssassins}/>
+                                    <BasicInput label="Correct/Bystander" type="number" name="correctBystanders" value={correctBystanders}/>
+                                    <BasicInput label="Bystander/Assassin" type="number" name="bystanderAssassins" value={bystanderAssassins}/>
+                                </>
+                            )}
                         </InputCard>
                         {mode==='Standard' && <InputCard title="Standard Mode">
                             <BasicInput label="Start Handicap" type="number" name="startCards" value={startCards} onChange={(e) => setStartCards(parseInt(e.target.value))} defaultValue={defaultFormValues[mode].startCards} />
