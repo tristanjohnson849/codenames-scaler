@@ -60,8 +60,8 @@ const BoardGenerator = () => {
                 margin: 'auto'
             }}>
                 <BoardForm formData={formData} setFormData={(formData) => setFormDataAndHash(formData)}/>
-                {formData && <LinkSharer key={hash}/>}
-                {formData && <BoardView key={hash} layout={createLayout(formData)}/>}
+                {formData && <LinkSharer/>}
+                {formData && <BoardView layout={createLayout(formData)}/>}
             </div>
         </div>
     );
