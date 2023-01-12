@@ -45,22 +45,27 @@ const SingleBoardView: React.FC<{ layout: DisplayableLayout }> = ({ layout: { ca
                 <VLight isLeft={false} color={startColor} />
                 <div style={{
                     minWidth: '360px',
-                    flex: 1,
-                    aspectRatio: '1 / 1',
                     display: 'flex',
+                    justifyContent: 'center',
+                    alignContent: 'center',
+                    aspectRatio: '1 / 1',
                     flexDirection: 'column',
                     borderRadius: '12px',
                     background: '#2b2b2b',
                     border: '1px solid #777',
-                    padding: '8px'
+                    padding: '8px',
                 }}>
                     {cards.map((row, colIndex) => <div key={colIndex} style={{
                         display: 'flex',
                         flexDirection: 'row',
-                        flex: 1
+                        flex: 1,
+                        maxHeight: '140px',
+                        justifyContent: 'center',
+                        alignContent: 'center',
                     }}>
                         {row.map((cellType, rowIndex) => <div key={`${colIndex}-${rowIndex}`} style={{
                             flex: 1,
+                            maxWidth: '210px',
                             background: typeToColor[cellType],
                             margin: '4px',
                             borderRadius: '12px',
