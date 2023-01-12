@@ -13,7 +13,11 @@ const SingleBoardView: React.FC<{ layout: DisplayableLayout }> = ({ layout: { ca
         : prevRotation + 90
     );
     // subtract rotation % 360 for correcct animations, if used 0 would spin through all rotations
-    const resetRotation = () => setBoardRotation(prevRotation => prevRotation - (prevRotation % 360));
+    // add 360 if mod > 180 to turn towards the closest direction
+    const resetRotation = () => setBoardRotation(prevRotation => {
+        const mod = prevRotation % 360;
+        return prevRotation - mod + (mod > 180 ? 360 : 0);
+    });
     return (
         <div style={{
             position: 'relative',
@@ -137,8 +141,8 @@ export const HLight: React.FC<{ isTop: boolean, color?: CardType, resetRotation?
                     background: `#363636`,
                     height: '32px',
                 }}/>
-                <div style={{ position: 'absolute', transform: 'rotateZ(180deg)', left: '8px', top: '4px'}}>⋁</div>
-                <div style={{ position: 'absolute', transform: 'rotateZ(180deg)', right: '8px', top: '4px'}}>⋁</div>
+                <div style={{ position: 'absolute', transform: 'rotateZ(180deg)', left: '6%', top: '4px'}}>⋁</div>
+                <div style={{ position: 'absolute', transform: 'rotateZ(180deg)', right: '6%', top: '4px'}}>⋁</div>
             </div>
         )}
     </>);
