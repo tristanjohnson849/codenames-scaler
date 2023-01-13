@@ -65,7 +65,6 @@ const createDuetLayout = ({
     const bothAssassins = assassins - (correctAssassins + bystanderAssassins);
     const bothBystander = bystanders - (correctBystanders + bystanderAssassins);
 
-
     const flatLayout: CardType[][] = fill(Array(boardSize), ['Bystander', 'Bystander']);
     let step = 0;
     step = _fill(flatLayout, ['DuetCorrect', 'DuetCorrect'], step, step + bothCorrect);
@@ -108,8 +107,8 @@ export const getDefaultOverlaps = (
     const bystanders = boardRows * boardColumns - (cards + assassins);
 
     return {
-        correctAssassins: Math.min(Math.floor(cards / 5), Math.floor(assassins / 3)),
-        correctBystanders: Math.min(Math.floor(cards / 1.5), Math.floor(bystanders / 2)),
+        correctAssassins: Math.min(Math.floor(cards / 5), Math.ceil(assassins / 3)),
+        correctBystanders: Math.min(Math.ceil(cards / 2), Math.ceil(bystanders / 2.5)),
         bystanderAssassins: Math.min(Math.floor(bystanders / 7), Math.floor(assassins / 3)),
     }
 };
