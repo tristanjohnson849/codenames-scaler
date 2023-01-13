@@ -51,18 +51,22 @@ const createDuetLayout = ({
     boardColumns,
     seed,
     cards,
+    assassins,
     correctAssassins,
     correctBystanders,
     bystanderAssassins
 }: DuetFormData): DuetLayout => {
     const rand = seededRandomInt(seed);
+    const boardSize = boardRows * boardColumns;
+
+    const bystanders = boardSize - (cards + assassins);
 
     const bothCorrect = cards - (correctAssassins + correctBystanders);
-    const bothAssassins = cards - (correctAssassins + bystanderAssassins);
-    const bothBystander = cards - (correctBystanders + bystanderAssassins);
+    const bothAssassins = assassins - (correctAssassins + bystanderAssassins);
+    const bothBystander = bystanders - (correctBystanders + bystanderAssassins);
 
 
-    const flatLayout: CardType[][] = fill(Array(boardRows * boardColumns), ['Bystander', 'Bystander']);
+    const flatLayout: CardType[][] = fill(Array(), ['Bystander', 'Bystander']);
     let step = 0;
     step = _fill(flatLayout, ['DuetCorrect', 'DuetCorrect'], step, step + bothCorrect);
     step = _fill(flatLayout, ['DuetCorrect', 'Assassin'], step, step + correctAssassins);
