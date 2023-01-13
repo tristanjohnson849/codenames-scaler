@@ -66,7 +66,7 @@ const createDuetLayout = ({
     const bothBystander = bystanders - (correctBystanders + bystanderAssassins);
 
 
-    const flatLayout: CardType[][] = fill(Array(), ['Bystander', 'Bystander']);
+    const flatLayout: CardType[][] = fill(Array(boardSize), ['Bystander', 'Bystander']);
     let step = 0;
     step = _fill(flatLayout, ['DuetCorrect', 'DuetCorrect'], step, step + bothCorrect);
     step = _fill(flatLayout, ['DuetCorrect', 'Assassin'], step, step + correctAssassins);
