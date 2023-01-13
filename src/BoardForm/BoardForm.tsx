@@ -235,17 +235,17 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
                                 <>
                                     <BasicInput 
                                         label="Correct/Assassin" type="number" name="correctAssassins" 
-                                        disabled
+                                        readOnly
                                         value={correctAssassins} 
                                     />
                                     <BasicInput 
                                         label="Correct/Bystander" type="number" name="correctBystanders" 
-                                        disabled
+                                        readOnly
                                         value={correctBystanders}
                                     />
                                     <BasicInput 
                                         label="Bystander/Assassin" type="number" name="bystanderAssassins" 
-                                        disabled
+                                        readOnly
                                         value={bystanderAssassins}
                                     />
                                 </>
