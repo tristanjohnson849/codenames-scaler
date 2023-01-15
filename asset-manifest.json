@@ -1,25 +1,25 @@
 {
   "files": {
     "main.css": "/codenames-scaler/static/css/main.8cf7717a.chunk.css",
-    "main.js": "/codenames-scaler/static/js/main.cc223b74.chunk.js",
-    "main.js.map": "/codenames-scaler/static/js/main.cc223b74.chunk.js.map",
-    "runtime-main.js": "/codenames-scaler/static/js/runtime-main.9315bdd4.js",
-    "runtime-main.js.map": "/codenames-scaler/static/js/runtime-main.9315bdd4.js.map",
-    "static/js/2.e80f9561.chunk.js": "/codenames-scaler/static/js/2.e80f9561.chunk.js",
-    "static/js/2.e80f9561.chunk.js.map": "/codenames-scaler/static/js/2.e80f9561.chunk.js.map",
-    "static/js/3.ecbbc245.chunk.js": "/codenames-scaler/static/js/3.ecbbc245.chunk.js",
-    "static/js/3.ecbbc245.chunk.js.map": "/codenames-scaler/static/js/3.ecbbc245.chunk.js.map",
+    "main.js": "/codenames-scaler/static/js/main.b826f80f.chunk.js",
+    "main.js.map": "/codenames-scaler/static/js/main.b826f80f.chunk.js.map",
+    "runtime-main.js": "/codenames-scaler/static/js/runtime-main.be750b28.js",
+    "runtime-main.js.map": "/codenames-scaler/static/js/runtime-main.be750b28.js.map",
+    "static/js/2.6b3eb02a.chunk.js": "/codenames-scaler/static/js/2.6b3eb02a.chunk.js",
+    "static/js/2.6b3eb02a.chunk.js.map": "/codenames-scaler/static/js/2.6b3eb02a.chunk.js.map",
+    "static/js/3.395affa4.chunk.js": "/codenames-scaler/static/js/3.395affa4.chunk.js",
+    "static/js/3.395affa4.chunk.js.map": "/codenames-scaler/static/js/3.395affa4.chunk.js.map",
     "index.html": "/codenames-scaler/index.html",
     "static/css/main.8cf7717a.chunk.css.map": "/codenames-scaler/static/css/main.8cf7717a.chunk.css.map",
-    "static/js/2.e80f9561.chunk.js.LICENSE.txt": "/codenames-scaler/static/js/2.e80f9561.chunk.js.LICENSE.txt",
+    "static/js/2.6b3eb02a.chunk.js.LICENSE.txt": "/codenames-scaler/static/js/2.6b3eb02a.chunk.js.LICENSE.txt",
     "static/media/copy.f212b952.svg": "/codenames-scaler/static/media/copy.f212b952.svg",
     "static/media/rotate-image.0b60d7c6.svg": "/codenames-scaler/static/media/rotate-image.0b60d7c6.svg",
     "static/media/share.6eed6cfd.svg": "/codenames-scaler/static/media/share.6eed6cfd.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.9315bdd4.js",
-    "static/js/2.e80f9561.chunk.js",
+    "static/js/runtime-main.be750b28.js",
+    "static/js/2.6b3eb02a.chunk.js",
     "static/css/main.8cf7717a.chunk.css",
-    "static/js/main.cc223b74.chunk.js"
+    "static/js/main.b826f80f.chunk.js"
   ]
 }
