@@ -1,4 +1,4 @@
-import { CSSProperties, Dispatch, SetStateAction, useState } from 'react';
+import { CSSProperties, useState } from 'react';
 import BoardView from './BoardView';
 import BoardForm, { CodenamesFormData } from './BoardForm/BoardForm';
 import { useParams } from 'react-router';
@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { decodeFormData, encodeFormData } from './BoardEncoding';
 import { createLayout } from "./BoardLayout";
 import LinkSharer from './LinkSharer';
-import MegaMultiSlider from './BoardForm/MegaMultiSlider';
 
 export const PAGE_SECTION_STYLE: CSSProperties = {
     marginBottom: '48px',
@@ -31,16 +30,6 @@ const BoardGenerator = () => {
     const setFormDataAndHash = (newFormData: CodenamesFormData) => {
         setFormData(newFormData);
         navigate(`/${encodeFormData(newFormData)}`)
-    }
-
-    const [cards, setCards] = useState<number>(9);
-    const [assassins, setAssassins] = useState<number>(3);
-    const [bystanders, setBystanders] = useState<number>(13);
-
-    const changes: { [name: string]: Dispatch<SetStateAction<number>> } = {
-        cards: setCards,
-        assassins: setAssassins,
-        bystanders: setBystanders
     }
     
     return (
@@ -68,33 +57,6 @@ const BoardGenerator = () => {
                 maxWidth: '1000px',
                 margin: 'auto'
             }}>
-                <div style={PAGE_SECTION_STYLE}>
-                    <div>Cards: {cards}</div>
-                    <div>Assassins: {assassins}</div>
-                    <div>Bystanders: {bystanders}</div>
-                    <MegaMultiSlider 
-                        regions={[
-                            {
-                                name: 'cards',
-                                label: 'Team Cards',
-                                cardType: 'DuetCorrect',
-                                defaultValue: 9,
-                            }, {
-                                name: 'assassins',
-                                label: 'Assassins',
-                                cardType: 'Assassin',
-                                defaultValue: 3,
-                            }, {
-                                name: 'bystanders',
-                                label: 'Bystanders',
-                                cardType: 'Bystander',
-                                defaultValue: 13,
-                            },
-                        ]}
-                        maxValue={25}
-                        onIntegerChange={(name: string, value: number) => changes[name](value)}
-                    />
-                </div>
                 <BoardForm formData={formData} setFormData={(formData) => setFormDataAndHash(formData)}/>
                 {formData && <LinkSharer/>}
                 {formData && <BoardView layout={createLayout(formData)}/>}

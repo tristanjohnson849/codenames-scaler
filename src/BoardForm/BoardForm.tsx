@@ -1,13 +1,13 @@
 import React, { FormEventHandler, useState } from "react";
 import Collapsible from "react-collapsible";
 import { PAGE_SECTION_STYLE } from "../BoardGenerator";
-import { getDefaultOverlaps } from "../BoardLayout";
 import { typeToColor } from "../BoardView";
-import { BasicInput } from "./BasicInput";
 import CollapseButton, { COLLAPSIBLE_EASING, COLLAPSIBLE_TIME } from "./CollapseButton";
+import DuetForm, { defaultFormValues as duetDefaultValues,  validateFormData as validateDuetFormData } from "./DuetForm";
 import { InputCard } from "./InputCard";
 import { RadioInput } from "./RadioInput";
 import { SeedInput } from "./SeedInput";
+import StandardForm, { defaultFormValues as standardDefaultValues, validateFormData as validateStandardFormData } from "./StandardForm";
 
 export type GameMode = 'Standard' | 'Duet';
 
@@ -58,28 +58,16 @@ export const linkButtonStyle = {
 };
 
 const defaultFormValues: { [mode in GameMode]: CodenamesFormData } = {
-    Standard: {
-        boardRows: 5,
-        boardColumns: 5,
-        cards: 8,
-        startCards: 1,
-        assassins: 1,
-        startColor: 'Random',
-        mode: 'Standard',
-        seed: ''
-    },
-    Duet: {
-        boardRows: 5,
-        boardColumns: 5,
-        cards: 9,
-        startCards: 0,
-        assassins: 3,
-        startColor: 'Random',
-        mode: 'Duet',
-        seed: ''
-    }
+    Standard: standardDefaultValues,
+    Duet: duetDefaultValues
 };
 
+export const angleStripeBackground = (
+    color1: string, 
+    color2: string, 
+    reverse: boolean = false, 
+    sizeInPx: number = 24
+) => `repeating-linear-gradient(${reverse ? "": "-"}45deg, ${color1}, ${color1} ${sizeInPx}px, ${color2} ${sizeInPx}px, ${color2} ${sizeInPx * 2}px)`;
 
 const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
     const startValues = formData
@@ -93,12 +81,6 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
     const [proxyGameMode, setProxyGameMode] = useState(startValues.mode);
     const [mode, _setGameMode] = useState(startValues.mode);
 
-    const [rows, setRows] = useState(startValues.boardRows);
-    const [columns, setColumns] = useState(startValues.boardColumns);
-    const [cards, setCards] = useState(startValues.cards);
-    const [startCards, setStartCards] = useState(startValues.startCards);
-    const [assassins, setAssassins] = useState(startValues.assassins);
-    const [startColor, setStartColor] = useState(startValues.startColor);
     const [seed, setSeed] = useState(startValues.seed);
 
     const [newSeedOnGenerate, setNewSeedOnGenerate] = useState<boolean>(true);
@@ -111,30 +93,18 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
 
     const setGameMode = (newMode: GameMode) => {
         if (mode !== newMode) {
-            const defaults = defaultFormValues[newMode];
-            setRows(defaults.boardRows);
-            setColumns(defaults.boardColumns);
-            setCards(defaults.cards);
-            setStartCards(defaults.startCards);
-            setAssassins(defaults.assassins);
-            setStartColor(defaults.startColor);
             setResetFormInputs(false);
         }
         _setGameMode(newMode);
     };
-
-    const {
-        correctAssassins,
-        correctBystanders,
-        bystanderAssassins
-    } = getDefaultOverlaps(rows, columns, cards, assassins);
 
     const onFormSubmit: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
         setErrorKey(prev => prev + 1);
         const formData: any = {};
         for (let [k, v] of (new FormData(e.currentTarget)).entries()) {
-            formData[k] = /^\d+$/.test(v as string) ? parseInt(v as string) : v;
+            const maybeInt = parseInt(v as string);
+            formData[k] = isNaN(maybeInt) ? v : maybeInt;
         }
 
         if (newSeedOnGenerate) {
@@ -143,13 +113,11 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
             setSeed(newSeed);
         }
 
-        const totalCards = formData.boardRows * formData.boardColumns;
-        const configuredCards = mode === 'Standard'
-            ? formData.cards * 2 + formData.startCards + formData.assassins
-            : formData.cards + formData.assassins;
+        const validated = mode === 'Standard' 
+            ? validateStandardFormData(formData as StandardFormData, setError) 
+            : validateDuetFormData(formData as DuetFormData, setError);
 
-        if (configuredCards > totalCards) {
-            setError(`Too many configured cards (${configuredCards}) for this board (${formData.boardRows}x${formData.boardColumns}=${totalCards})`);
+        if (!validated) {
             return false;
         } else {
             if (closeConfigOnGenerate) {
@@ -203,71 +171,10 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
                         flexWrap: 'wrap',
                         marginBottom: '24px'
                     }}>
-
-                        <InputCard title="Board">
-                            <BasicInput 
-                                label="Rows" type="number" name="boardRows" 
-                                value={rows} 
-                                onChange={(e) => setRows(parseInt(e.target.value))} 
-                                defaultValue={defaultFormValues[mode].boardRows} 
-                            />
-                            <BasicInput 
-                                label="Columns" type="number" name="boardColumns" 
-                                value={columns} 
-                                onChange={(e) => setColumns(parseInt(e.target.value))} 
-                                defaultValue={defaultFormValues[mode].boardColumns} 
-                            />
-                        </InputCard>
-                        <InputCard title="Game">
-                            <BasicInput 
-                                label="Team Cards" type="number" name="cards" 
-                                value={cards} 
-                                onChange={(e) => setCards(parseInt(e.target.value))} 
-                                defaultValue={suggestedCards(rows, columns, mode)} 
-                            />
-                            <BasicInput 
-                                label="Assassins" type="number" name="assassins" 
-                                value={assassins} 
-                                onChange={(e) => setAssassins(parseInt(e.target.value))} 
-                                defaultValue={suggestedAssassins(rows, columns, mode)} 
-                            />
-                            {mode === 'Duet' && (
-                                <>
-                                    <BasicInput 
-                                        label="Correct/Assassin" type="number" name="correctAssassins" 
-                                        readOnly
-                                        value={correctAssassins} 
-                                    />
-                                    <BasicInput 
-                                        label="Correct/Bystander" type="number" name="correctBystanders" 
-                                        readOnly
-                                        value={correctBystanders}
-                                    />
-                                    <BasicInput 
-                                        label="Bystander/Assassin" type="number" name="bystanderAssassins" 
-                                        readOnly
-                                        value={bystanderAssassins}
-                                    />
-                                </>
-                            )}
-                        </InputCard>
-                        {mode === 'Standard' && <InputCard title="Standard Mode">
-                            <BasicInput 
-                                label="Start Handicap" type="number" name="startCards" 
-                                value={startCards} 
-                                onChange={(e) => setStartCards(parseInt(e.target.value))} 
-                                defaultValue={defaultFormValues[mode].startCards} 
-                            />
-                            <RadioInput 
-                                title="Starting Team" labels={['Red', 'Blue', 'Random']} name="startColor" 
-                                value={startColor} 
-                                onChange={(e) => setStartColor(e.target.value as any)} 
-                                defaultValue="Random" 
-                            />
-                        </InputCard>}
                         <InputCard title="Random">
                             <SeedInput name="seed" value={seed} onChange={(e) => setSeed(e.target.value)} />
                         </InputCard>
+                        {mode === 'Standard' ? <StandardForm startValues={startValues as StandardFormData}/> : <DuetForm startValues={startValues as DuetFormData}/>}
 
                     </div>
                     <button style={{
@@ -285,7 +192,8 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
                         Close config?
                     </label>
 
-                    <button
+                    {/* TODO fix reset default button */}
+                    {/* <button
                         type="button"
                         onClick={() => {
                             const defaults = defaultFormValues[mode];
@@ -302,7 +210,7 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
                             marginRight: '12px'
                         }}>
                         Reset Defaults
-                    </button>
+                    </button> */}
                 </Collapsible>
                 <div
                     key={errorKey}
@@ -319,20 +227,6 @@ const BoardForm: React.FC<BoardFormProps> = ({ formData, setFormData }) => {
         </Collapsible>
     );
 };
-
-const suggestedCards = (rows: number, columns: number, gameMode: GameMode) => {
-    if (!rows || !columns) {
-        return defaultFormValues[gameMode].cards;
-    }
-    if (gameMode === 'Standard') {
-        return Math.floor(rows * columns / 3);
-    } else {
-        return Math.floor(rows * columns / 3) + 1;
-    }
-};
-
-const suggestedAssassins = (rows: number, columns: number, gameMode: GameMode) =>
-    Math.floor(rows * columns / (gameMode === 'Standard' ? 15 : 8)) || defaultFormValues[gameMode].assassins;
 
 export const randomSeed = (): string => Math.random().toString(36).slice(2);
 

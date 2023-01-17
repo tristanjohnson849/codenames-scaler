@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef } from "react";
 
 /*
 converts a dispatch on T to a dispatch on S
@@ -41,4 +41,12 @@ export function transformAndDispatch<S, T>(
 
 export function isFunctionAction<S>(action: SetStateAction<S>): action is (newState: S) => S {
     return typeof action === 'function';
+}
+
+export function usePrevious<T>(value: T): T | null {
+    const ref = useRef<T | null>(null);
+    useEffect(() => {
+        ref.current = value;
+    });
+    return ref.current;
 }

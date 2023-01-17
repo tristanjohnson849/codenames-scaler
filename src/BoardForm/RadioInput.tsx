@@ -1,11 +1,11 @@
 import React from "react";
 import { useControllableState, linkButtonStyle } from "./BoardForm";
 
-export const RadioInput: React.FC<{ title?: string; labels: string[]; } & React.ComponentProps<"input">> = ({ title, labels, value, defaultValue, onChange, ...inputProps }) => {
+export const RadioInput: React.FC<{ title?: string; labels: string[]; } & React.ComponentProps<"input">> = ({ title, labels, value, defaultValue, onChange, style = {}, ...inputProps }) => {
     const [checkedLabel, setCheckedLabel] = useControllableState(value, defaultValue || labels[0]);
 
     return (
-        <div>
+        <div style={style}>
             {(title || defaultValue !== undefined) && <>
                 <div>
                     {title}
